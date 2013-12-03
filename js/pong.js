@@ -256,7 +256,7 @@ function InitPong() {
         <hr>\
         <input id="single_player_two_paddles" type="checkbox">Single player with no CPU<br>\
         <!--<input id="use_mouse_as_ctrl"    type="checkbox">Use mouse as control<br>-->\
-        InputMethod: <select id="InputMethod">\
+        InputMethod: <select id="inputMethod">\
         <option value="0">Keyboard</option>\
         <option value="2">Mouse</option>\
         <option value="1">Touch drag</option>\
@@ -279,8 +279,11 @@ function InitPong() {
             text: value
         }))
     });
-    $('#PongTable #AI_player #inputMethods').change(function () {
+    $('#PongTable #AI_player').change(function () {
         eval(this.id + '= parseInt(this.value)');
+    });
+    $('#PongTable #inputMethod').change(function () {
+        eval(this.id + '= this.value');
     });
     $('#PongTable').find('#level,#P1VY,#P2VY').change(function () {
         eval('this.value = ' + this.id + '= ($.isNumeric(this.value)) ? this.value : ' + this.id);
@@ -471,6 +474,7 @@ function _menu() {
     $('#PongTable #interactive').attr('checked', interactive);
     $('#PongTable #paused').attr('checked', false);
     $('#PongTable #AI_player').val(AI_player);
+    $('#inputMethod').val(inputMethod);
     $('#PongTable #AI_player').attr('disabled', single_player_two_paddles);
     $('#PongTable #AI_difficulty').val(AI_difficulty * 100);
     $('#PongTable #link_velocity_of_players').attr('checked', link_velocity_of_players);
