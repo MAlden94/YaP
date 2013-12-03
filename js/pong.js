@@ -683,6 +683,7 @@ function OrientationChangeHandler(event) {
 function TouchHandler(event) {
     // half of screen allocated to P1, other half P2
     var $real_player = (event.changedTouches[0].pageX < window_width / 2) ? $p1 : $p2;
+    console.log(Math.round((event.changedTouches[0].pageY - $(document).scrollTop()) - (parseInt($real_player.css('height')) / 2)));
     console.log($real_player.id, " TouchEvent: ", event.type);
     return true;
 }
