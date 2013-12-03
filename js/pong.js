@@ -682,7 +682,8 @@ function OrientationChangeHandler(event) {
  **/
 function TouchHandler(event) {
     // half of screen allocated to P1, other half P2
-    console.log("TouchEvent: ", event.type);
+    var $real_player = (e.changedTouches[0].pageX < window_width / 2) ? $p1 : $p2;
+    console.log($real_player.id, " TouchEvent: ", event.type);
     return true;
 }
 
@@ -708,7 +709,6 @@ function MouseHandler(event) {
  * @return true
  **/
 function KeyboardHandler(e) {
-    if (!interactive) return;
     //document.title=e.which;
     //document.title=String.fromCharCode(e.which);
     p1_top = parseInt($p1.css('top'));
@@ -770,9 +770,7 @@ function KeyboardHandler(e) {
         p1_top = p2_top;
         p1_bottom = p2_bottom;
     }
-
-    console.log(p1_bottom, p1_top);
-
+ 
     $p1.css({
         'top': p1_top + 'px',
         'bottom': p1_bottom + 'px',
