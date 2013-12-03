@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (C) 2012-2013 Mitchell Lafferty <coolspeedy6 at gmail dot com>
 Released under the GNU GPL.
 
@@ -659,6 +659,7 @@ function EventHandler(event) {
  * @notes
  * @return true
  **/
+
 function OrientationChangeHandler(event) {
     var $real_player = null;
     if (single_player_two_paddles) {
@@ -667,14 +668,10 @@ function OrientationChangeHandler(event) {
         $real_player = (AI_player == 1) ? $p2 : $p1;
     }
 
-    var beta = event.beta;
+    var beta = constrain(event.beta, -45, 45);
+    beta = Math.round(map(beta, -45, 45, 0, (window_height - parseInt($real_player.css('height')))));
 
-    if (beta < -45) beta = -45;
-    if (beta > 45) beta = 45;
-
-    beta = Math.round((beta / 45) * (window_height - parseInt($real_player.css('height')))) + 'px';
-
-    $real_player.css('top', beta);
+    $real_player.css('top', beta + 'px');
     return true;
 }
 
@@ -684,7 +681,6 @@ function OrientationChangeHandler(event) {
  * @return true
  **/
 function TouchHandler(event) {
-  
     // half of screen allocated to P1, other half P2
     console.log("TouchEvent: ", event.type);
     return true;
@@ -703,9 +699,7 @@ function MouseHandler(event) {
         $real_player = (AI_player == 1) ? $p2 : $p1;
     }
     var y = Math.round((event.pageY - $(document).scrollTop()) - (parseInt($real_player.css('height')) / 2));
-    if (y > window_height) y = (window_height - parseInt($real_player.css('height')));
-    if (y < 0) y = 0;
-    $real_player.css('top', y + 'px');
+    $real_player.css('top', constrain(y, 0, window_height - parseInt($real_player.css('height'))) + 'px');
     return true;
 }
 /**
@@ -803,6 +797,32 @@ function parseBool(value) {
     if (value == null || value == "") return false;
     return (value.toLowerCase() == 'true' || value == '1');
 }
+
+/**
+ * @brief constrains values to lbound..ubound
+ * @notes
+ * @return result
+ **/
+function constrain(value, lbound, ubound) {
+  if(value < lbound) {
+    return lbound;
+  }
+  else if(value > ubound) {
+    return ubound;
+  }
+  return value;
+}
+
+/**
+ * @brief maps values to in_min..in_maz to out_min..out_max
+ * @notes
+ * @return result
+ **/
+function map(value, in_min, in_max, out_min, out_max)
+{
+  return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 
 function About() {
     // DON'T TOUCH THIS OR ELSE! Unless you are contributing and keep my copyright intact :-)
