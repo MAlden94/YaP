@@ -424,8 +424,7 @@ function speedup(mode) {
         break;
     }
 
-    if (level < 0) level = 1;
-    if (level > 100) level = 100;
+    level = constrain(level, 0, 100);
 
     if (Math.abs(ball_vx) < 100) {
         ball_vy = (ball_vy < 0 ? -1 : 1) * level;
