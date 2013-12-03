@@ -368,7 +368,7 @@ function PostInit() {
     $('#PongTable').removeClass('interactive');
 
     for (var input in inputMethods) {
-        $(document).off(input, EventHandler);
+        $(document).off(input); //, EventHandler);
     }
 
     if (jQuery.inArray(inputMethod, inputMethods) == -1) {
