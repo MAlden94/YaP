@@ -624,7 +624,10 @@ function EventHandler(event){
       case 'mousemove':
 	//console.log("caught: ",event.type);
 	return MouseHandler(event);
+      // for touch there is two modes: dragging, or tapping
       case 'touchstart':
+      case 'touchmove':
+      case 'touchend':
 	//console.log("caught: ",event.type);
 	return TouchHandler(event);
       case 'orientationchange':  
@@ -663,6 +666,7 @@ function OrientationChangeHandler(event){
  * @return true
  **/
 function TouchHandler(event){
+  console.log("TouchEvent: ",event.type);
   return true;
 }
 
