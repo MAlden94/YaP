@@ -684,6 +684,8 @@ function OrientationChangeHandler(event) {
  * @return true
  **/
 function TouchHandler(event) {
+  
+    // half of screen allocated to P1, other half P2
     console.log("TouchEvent: ", event.type);
     return true;
 }
