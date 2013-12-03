@@ -274,7 +274,7 @@ function InitPong() {
 </div>');
 
     $.each(inputMethods, function (index, value) {
-        $('#inputMethods').append($('<option/>', {
+        $('#inputMethod').append($('<option/>', {
             value: value,
             text: value
         }))
