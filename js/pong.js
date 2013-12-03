@@ -257,11 +257,11 @@ function InitPong() {
         <input id="single_player_two_paddles" type="checkbox">Single player with no CPU<br>\
         <!--<input id="use_mouse_as_ctrl"    type="checkbox">Use mouse as control<br>-->\
         InputMethod: <select id="inputMethod">\
-        <option value="0">Keyboard</option>\
+        <!--<option value="0">Keyboard</option>\
         <option value="2">Mouse</option>\
         <option value="1">Touch drag</option>\
         <option value="1">Touch click</option>\
-        <option value="1">Gyroscope</option>\
+        <option value="1">Gyroscope</option>-->\
         </select><br>\
         <input id="level_up_auto"        type="checkbox">Automatically level up<br>\
         <input id="interactive"          type="checkbox">interactive<br>\
