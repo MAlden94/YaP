@@ -367,9 +367,10 @@ function PostInit() {
 
     $('#PongTable').removeClass('interactive');
 
-    for (var input in inputMethods) {
-        $(document).off(input); //, EventHandler);
-    }
+    //for (var input in inputMethods) {
+    //    $(document).off(input); //, EventHandler);
+    //}
+    $(document).off();
 
     if (jQuery.inArray(inputMethod, inputMethods) == -1) {
         console.log("inputMethod: ", inputMethod, ": not found using: ", inputMethods[0], " input instead");
