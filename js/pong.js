@@ -681,14 +681,19 @@ function OrientationChangeHandler(event) {
  * @return true
  **/
 function TouchHandler(event) {
-    // half of screen allocated to P1, other half P2
-    var $real_player = (event.changedTouches[0].pageX < window_width / 2) ? $p1 : $p2;
-    console.log(Math.round((event.changedTouches[0].pageY - $(document).scrollTop()) - (parseInt($real_player.css('height')) / 2)));
-    console.log($real_player.id, " TouchEvent: ", event.type);
-    return true;
+  // half of screen allocated to P1, other half P2
+  var $real_player = null;
+  if  (single_player_two_paddles){
+      $real_player = $p1.add($p2);
+  } else {
+      $real_player = (event.changedTouches[0].pageX < window_width / 2) ? $p1 : $p2;
+  }
+  var y = Math.round((event.changedTouches[0].pageY - $(document).scrollTop()) - (parseInt($real_player.css('height')) / 2))
+  $real_player.css('top', y + 'px');
+  return true;
 }
 
-/**
+/**-
  * @brief This is for linking mouse to paddles
  * @notes
  * @return true
