@@ -90,6 +90,103 @@ var AI_random = 0;
 var link_velocity_of_players = true;
 var FixBoundary = false;
 
+
+
+function Pong(){
+ this.level = function (arg){
+    if ($.isNumeric(arg)){
+      level = arg;
+    }
+    return level;
+  }
+  /*
+  this.ball_vy = function (arg){
+   if ($.isNumeric(arg)){
+     ball_vy = this.ball_vy;
+   }
+   return ball_vy;
+ }
+  this.ball_vx = function (arg){
+   if ($.isNumeric(arg)){
+     ball_vx = this.ball_vx;
+   }
+   return ball_vx;
+ }
+ */
+  this.Player1Velocity = function (arg){
+   if ($.isNumeric(arg)){
+     P1VY = arg;
+   }
+   return P1VY;
+ }
+  this.Player2Velocity = function (arg){
+   if ($.isNumeric(arg)){
+     P2VY = arg;
+   }
+   return P2VY;
+ }
+  this.AI_difficulty = function (arg){
+   if ($.isNumeric(arg) && (arg => 0 && arg <= 1)){
+     AI_difficulty = arg;
+   }
+   return AI_difficulty;
+ }
+
+  this.AI_player = function (arg){
+   if ($.isNumeric(arg) && (arg => 0 && arg <= 2)){
+     AI_player = arg;
+   }
+   return AI_player;
+ }
+ /*
+  this.InputMethod = function (arg){ // need in array check
+   if (){
+     inputMethod = arg;
+   }
+   return inputMethod;
+ }
+*/
+ 
+  this.DualPaddles = function (arg){
+   if (arguments.length > 0){
+     single_player_two_paddles = arg;
+   }
+   return single_player_two_paddles;
+ }
+ 
+  this.AutoLevelUp = function (arg){
+   if (arguments.length > 0){
+     level_up_auto = arg;
+   }
+   return level_up_auto;
+ }
+
+   this.Interactive = function (arg){
+   if (arguments.length > 0){
+     interactive = arg;
+   }
+   return interactive;
+ }
+ this.Menu = function (arg){
+   if (arguments.length > 0){
+     menu = arg;
+   }
+   return menu;
+ }
+  this.Paused = function (arg){
+   if (arguments.length > 0){
+     paused = arg;
+   }
+   return paused;
+ }
+ this.LevelChangesPaddleSize = function (arg){
+   if (arguments.length > 0){
+      level_changes_paddle_size = arg;
+   }
+   return  level_changes_paddle_size;
+ }
+  _InitPong();
+}
 if (!jQuery) {
     // load jquery if user forgot to load it
     console.log("Pong: You fogot to load JQuery, falling back to JQuery 1.10.1!");
@@ -144,7 +241,7 @@ if (!window.cancelAnimationFrame)
  * @notes This is a singleton, it will only run once
  * @return void
  **/
-function InitPong() {
+function _InitPong() {
     if (this.ran) return;
     // rather than calling these methods multiple times we set a varible to it's value to instead, to opimize for speed
     // and we reduce it to one call
@@ -415,6 +512,7 @@ function PostInit() {
  * @return void
  **/
 function speedup(mode) {
+
     switch (mode) {
     case 0:
         level++;
@@ -430,10 +528,12 @@ function speedup(mode) {
         ball_vy = (ball_vy < 0 ? -1 : 1) * level;
         ball_vx = (ball_vx < 0 ? -1 : 1) * level;
     }
+
     if (level_changes_paddle_size) {
         if (parseInt($p1.css('height')) > 15) $p1.css('height', Math.ceil(P1InitSize - ((level * 2.5) / 100) * P1InitSize) + 'px');
         if (parseInt($p2.css('height')) > 15) $p2.css('height', Math.ceil(P2InitSize - ((level * 2.5) / 100) * P2InitSize) + 'px');
     }
+
     if (interactive) document.title = 'Level: ' + level;
 }
 
