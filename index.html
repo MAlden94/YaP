@@ -1,13 +1,19 @@
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/pong.css" rel="stylesheet" type="text/css">
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script src="js/pong.js"></script>
     <title>pong test</title>
-    <script>$(function(){InitPong()});</script>
+    <script>
+     var PongObj;
+     $(function(){PongObj = new Pong()});
+    </script>
   </head>
   <body>
-  test
-  </body>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="pong_pause_toggle"></a>
+<a href="#" id="pong_interactive_toggle"></a>
+<a href="#" id="pong_menu_toggle"></a>
+</body>
 </html>

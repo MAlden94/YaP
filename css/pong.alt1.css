@@ -31,7 +31,7 @@ when pong is interactive your webpage is not.
     #PongTable {display: none}
 }
 
-#pong_btn_group, #pong_pause_toggle,#pong_interactive_toggle {
+#pong_btn_group, #pong_pause_toggle,#pong_interactive_toggle, #pong_menu_toggle {
     position: relative;
     z-index: 999999;
     display: none;
@@ -53,7 +53,7 @@ when pong is interactive your webpage is not.
     z-index: 9999;
 }
 
-#PongTable #menu {
+#PongTable #Menu, #PongTable #About {
     z-index: 99999;
     position: fixed !important;
     position: absolute;
@@ -67,15 +67,17 @@ when pong is interactive your webpage is not.
     margin-left:  auto; 
     margin-right: auto;
     text-align:   center;
+    background-color: #000;
+    color: #0F0;
 }
 
-#PongTable #AI_player {
-    width: 80px;
+#PongTable select {
+    width: 100px;
     background: #000;
     color: #0F0;
 }
 
-#PongTable #AI_difficulty,#PongTable #P1VY,#PongTable #P2VY,#PongTable #level {
+#PongTable input {
     width: 50px;
     background: #000;
     color: #0F0;
@@ -118,10 +120,10 @@ when pong is interactive your webpage is not.
     width: 10px;
     height: 100px;
     background: #0F0;
-    border-radius: 20px !important;
-    -moz-border-radius: 20px !important;
+    border-radius: 20px         !important;
+    -moz-border-radius:    20px !important;
     -webkit-border-radius: 20px !important;
-    -khtml-border-radius: 20px !important;
+    -khtml-border-radius:  20px !important;
 }
 
 #PongTable #P2 {
