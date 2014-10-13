@@ -128,7 +128,7 @@ var Pong = function() {
 	  'touchmove':  'Drag',
 	  'deviceorientation': 'Gyroscope',
 	};
-
+    YaP_Object.Privates.SafeFrameLatency = 50;
     YaP_Object.Privates.title         = document.title;
     YaP_Object.Privates.Blinker       = null;
     YaP_Object.Privates.FrameID       = null;
@@ -616,7 +616,7 @@ if (!window.cancelAnimationFrame)
      * @return void
      **/
     YaP_Object.Functions._newframe = function () {
-        //var start = Date.now();
+        var start = Date.now();
         if (!YaP_Object.Settings.Paused) {
            window.requestAnimationFrame(YaP_Object.Functions._newframe);
         }
@@ -747,7 +747,18 @@ if (!window.cancelAnimationFrame)
             'top':  ball_top  + 'px',
             'left': ball_left + 'px',
         });
-        //console.log(Date.now() - start);
+
+	if (Date.now() - start > YaP_Object.Privates.SafeFrameLatency){
+	  if (YaP_Object.Settings.Interactive){
+	      YaP_Object.Settings.Interactive = false;
+	      alert("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
+	  } else {
+	    // console.log
+	  }
+	  $('#pong_pause_toggle').mouseup(); // ughhhhh
+	  //YaP_Object.Settings.Paused = true;
+	  //YaP_Object.Functions.Update();
+	}
     }
 
    
