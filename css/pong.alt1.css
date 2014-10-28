@@ -106,10 +106,12 @@ when pong is interactive your webpage is not.
     width: 10px;
     height: 10px;
     background: #0F0;
-    border-radius: 50% !important;
-    -moz-border-radius: 50% !important;
+    border-radius:         50% !important;
+    -o-border-radius:      50% !important;
+    -moz-border-radius:    50% !important;
     -webkit-border-radius: 50% !important;
-    -khtml-border-radius: 50% !important;
+    -khtml-border-radius:  50% !important;
+    -ms-border-radius:     50% !important;
 }
 
 #PongTable #P1 {
@@ -120,10 +122,12 @@ when pong is interactive your webpage is not.
     width: 10px;
     height: 100px;
     background: #0F0;
-    border-radius: 20px         !important;
+    border-radius:         20px !important;
+    -o-border-radius:      20px !important;
     -moz-border-radius:    20px !important;
     -webkit-border-radius: 20px !important;
     -khtml-border-radius:  20px !important;
+    -ms-border-radius:     20px !important;
 }
 
 #PongTable #P2 {
@@ -134,8 +138,10 @@ when pong is interactive your webpage is not.
     width: 10px;
     height: 100px;
     background: #0F0;
-    border-radius: 20px !important;
-    -moz-border-radius: 20px !important;
+    border-radius:         20px !important;
+    -o-border-radius:      20px !important;
+    -moz-border-radius:    20px !important;
     -webkit-border-radius: 20px !important;
-    -khtml-border-radius: 20px !important;
+    -khtml-border-radius:  20px !important;
+    -ms-border-radius:     20px !important;
 }

@@ -65,7 +65,7 @@ when pong is interactive your webpage is not.
 }
 
 #PongTable #Menu, #PongTable #About {
-    z-index: 99999;
+    z-index: inherit; /* 9999 */
     position: fixed !important;
     position: absolute;
     background-color: #000;
@@ -135,12 +135,12 @@ when pong is interactive your webpage is not.
     width: 10px;
     height: 100px;
     background: #0F0;
-    border-radius: 20px !important;
-    -o-border-radius: 20px !important;
-    -moz-border-radius: 20px !important;
+    border-radius:         20px !important;
+    -o-border-radius:      20px !important;
+    -moz-border-radius:    20px !important;
     -webkit-border-radius: 20px !important;
-    -khtml-border-radius: 20px !important;
-    -ms-border-radius: 20px !important;
+    -khtml-border-radius:  20px !important;
+    -ms-border-radius:     20px !important;
 }
 
 #PongTable #P2 {
@@ -153,10 +153,10 @@ when pong is interactive your webpage is not.
     width: 10px;
     height: 100px;
     background: #0F0;
-    border-radius: 20px !important;
-    -o-border-radius: 20px !important;
-    -moz-border-radius: 20px !important;
+    border-radius:         20px !important;
+    -o-border-radius:      20px !important;
+    -moz-border-radius:    20px !important;
     -webkit-border-radius: 20px !important;
-    -khtml-border-radius: 20px !important;
-    -ms-border-radius: 20px !important;
+    -khtml-border-radius:  20px !important;
+    -ms-border-radius:     20px !important;
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2012-2013 Mitchell Lafferty <coolspeedy6 at gmail dot com>
+Copyright (C) 2012-2014 Mitchell Lafferty <coolspeedy6 at gmail dot com>
 Released under the GNU GPL.
 
 YaP (Yet another Pong) is free software: you can redistribute it and/or modify
@@ -21,15 +21,20 @@ to the code, so please email me if you wish to.
 
 For any questions please email me.
 
-What's included: pong.js, pong.css, pong.alt*.css (get the files here or email me: http://linuxrules94.users.sf.net/wordpress/2013/09/15/adding-yet-another-pong-to-your-site/)
+What's included: pong.js, pong.css, pong.alt*.css (get the files here or email me: http://linuxrules94.users.sf.net/)
 
 Add the following to head and replace path/to/pong.css with the path of one of 3 css files included:
 
-<link href="path/to/pong.css" rel="stylesheet" type="text/css">
-<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<script src="path/to/pong.js"></script>
-<script>$(function(){InitPong()});</script>
+<link href="http://rawgit.com/linuxrules94/YaP/master/css/pong.css" type="text/css" rel="stylesheet">
+<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="http://rawgit.com/linuxrules94/YaP/master/js/pong.js"></script>
+<script>
+$(function(){
+    Pong()
+});
+</script>
+
+<!DOCTYPE html>
 
 
 and if wanted you can add elements to start & stop pong:
@@ -63,7 +68,7 @@ Notes to self:
 if (typeof jQuery === 'undefined')
 {
     // load jquery if user forgot to load it
-    //window.console&&console.log("YaP: You fogot to load JQuery, Attempting to fall back to JQuery 2.1.1!");
+    window.console&&console.log("YaP: You fogot to load jQuery, Attempting to fall back to jQuery 2.1.1!");
     document.write('<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>');
     //document.write('<script src="/usr/share/javascript/jquery/jquery-migrate-1.2.1.min.js"></script>');
 }
@@ -91,7 +96,7 @@ if (typeof jQuery === 'undefined')
             if (newKeyTime - lastKeyTime <= deltaTime)
               {
                 lastKeyCode = 0;
-                newKeyTime = 0;
+                newKeyTime  = 0;
                 return funcCall(event)
               }
           }
@@ -115,7 +120,6 @@ var Pong = function() {
         return YaP_Object
     }
 
-    //return $(function(){
     var YaP_Object      = new Object();
 
     YaP_Object.Privates = new Object();
@@ -128,7 +132,8 @@ var Pong = function() {
 	  'touchmove':  'Drag',
 	  'deviceorientation': 'Gyroscope',
 	};
-    YaP_Object.Privates.SafeFrameLatency = 50;
+    YaP_Object.Privates.LatestFrameLatency = 0;
+    YaP_Object.Privates.SafeFrameLatency   = 300;
     YaP_Object.Privates.title         = document.title;
     YaP_Object.Privates.Blinker       = null;
     YaP_Object.Privates.FrameID       = null;
@@ -439,19 +444,6 @@ if (!window.cancelAnimationFrame)
       if (e.which == 112) YaP_Object.Functions.toggleMenu()
       }); // p key = pause
 
-
-
-
-    /**
-     * @brief This is for setting Menu data
-     * @notes
-     * @return void (ambiguous)
-     **/
-    YaP_Object.Functions._MenuSetup = function () {
-       console.log("f" + YaP_Object.Privates.Menu);
-
-    }
-
     /**
      * @brief This sets the params and saves them
      * @notes
@@ -487,7 +479,7 @@ if (!window.cancelAnimationFrame)
 
 	YaP_Object.Functions.UpdateLevel(2);
 
-        $('#pong_menu_toggle').text((YaP_Object.Functions.Menu              ? 'open' : 'close') + ' pong menu');
+        $('#pong_menu_toggle').text((YaP_Object.Privates.Menu               ? 'close' : 'open') + ' pong menu');
         $('#pong_pause_toggle').text((YaP_Object.Settings.Paused            ? 'play' : 'pause') + ' pong');
         $('#pong_interactive_toggle').text((YaP_Object.Settings.Interactive ? 'quit' : 'start') + ' pong');
 
@@ -616,7 +608,7 @@ if (!window.cancelAnimationFrame)
      * @return void
      **/
     YaP_Object.Functions._newframe = function () {
-        var start = Date.now();
+        var start = (new Date()).getMilliseconds();
         if (!YaP_Object.Settings.Paused) {
            window.requestAnimationFrame(YaP_Object.Functions._newframe);
         }
@@ -658,10 +650,11 @@ if (!window.cancelAnimationFrame)
                 var tmp_id = (YaP_Object.Settings.AI_player == 1) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
                 var ball_pos = ball_top - (parseInt($(tmp_id).css('height')) / 2) + YaP_Object.Privates.AI_Error * (YaP_Object.Privates.ball_vy < 0 ? -1 : 1);
                 var AI_vy = (YaP_Object.Settings.InputMethod == 'keydown') ? (YaP_Object.Settings.AI_player == 1 ? YaP_Object.Settings.Player1Velocity : YaP_Object.Settings.Player2Velocity) : 1;
-                if (YaP_Object.Privates.ball_vy < 0) {
-                    for (i = parseInt($(tmp_id).css('top')); i >= ball_pos; i -= AI_vy) {
-                        $(tmp_id).css('top', i + 'px');
-                    }
+
+	    if (YaP_Object.Privates.ball_vy < 0) {
+		    for (i = parseInt($(tmp_id).css('top')); i >= ball_pos; i -= AI_vy) {
+			$(tmp_id).css('top', i + 'px');
+		    }
                 } else {
                     for (i = parseInt($(tmp_id).css('top')); i <= ball_pos; i += AI_vy) {
                         $(tmp_id).css('top', i + 'px');
@@ -747,13 +740,13 @@ if (!window.cancelAnimationFrame)
             'top':  ball_top  + 'px',
             'left': ball_left + 'px',
         });
-
-	if (Date.now() - start > YaP_Object.Privates.SafeFrameLatency){
+        //window.console&&console.log((new Date()).getMilliseconds() - start);
+	if ((YaP_Object.Privates.LatestFrameLatency = (new Date()).getMilliseconds() - start) > YaP_Object.Privates.SafeFrameLatency){
 	  if (YaP_Object.Settings.Interactive){
 	      YaP_Object.Settings.Interactive = false;
 	      alert("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
 	  } else {
-	    // console.log
+	      console.log("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
 	  }
 	  $('#pong_pause_toggle').mouseup(); // ughhhhh
 	  //YaP_Object.Settings.Paused = true;
@@ -989,6 +982,6 @@ if (!window.cancelAnimationFrame)
     }
 
     YaP_Object.Functions.Update();
+
     return YaP_Object
-    //});
 }
