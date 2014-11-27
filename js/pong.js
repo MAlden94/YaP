@@ -68,20 +68,19 @@ Notes to self:
 if (typeof jQuery === 'undefined')
 {
     // load jquery if user forgot to load it
-    window.console&&console.log("YaP: You fogot to load jQuery, Attempting to fall back to jQuery 2.1.1!");
+    window.console&&console.log("YaP: You fogot to load jQuery, Attempting to fallback to jQuery 2.1.1!");
     document.write('<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>');
     //document.write('<script src="/usr/share/javascript/jquery/jquery-migrate-1.2.1.min.js"></script>');
 }
-
 
 // homemade jquery plugin to catch double keypress
 (function ($)
 {
   $.fn.doublekeypress = function (funcCall, deltaTime)
   {
-    var lastKeyCode = 0;
+    var lastKeyCode = null;
     var lastKeyTime = 0;
-    if ($.isNumeric(deltaTime) == false)
+    if (!$.isNumeric(deltaTime))
       {
         deltaTime = 600;
       }
@@ -92,15 +91,17 @@ if (typeof jQuery === 'undefined')
         var newKeyCode = event.which;
         if (newKeyCode == lastKeyCode)
           {
-            var newKeyTime = (new Date()).getMilliseconds();
+            var newKeyTime = Date.now();
+	    console.log(newKeyTime, ' - ', lastKeyTime, ' = ', newKeyTime - lastKeyTime, ' <= ', deltaTime)
             if (newKeyTime - lastKeyTime <= deltaTime)
               {
-                lastKeyCode = 0;
-                newKeyTime  = 0;
+                lastKeyCode = null;
+		newKeyTime  = 0;
                 return funcCall(event)
               }
+              lastKeyTime = newKeyTime;
           }
-               lastKeyCode = newKeyCode
+          lastKeyCode = newKeyCode
       })
     })
   }
@@ -201,7 +202,22 @@ if (!window.cancelAnimationFrame)
     YaP_Object.Privates.P2InitSize = parseInt(YaP_Object.Privates.$p2.css('height'));
 
     $.each(YaP_Object.Privates.InputMethodNames, function (index, value) {
-        if ('on' + index in window) YaP_Object.Privates.InputMethods.push(index); // broken
+        if ('on' + index in window){
+            if(index == 'deviceorientation') {
+                /*
+                 * f*cking device* is defined regardless of
+                 * weather or not it is supported, where as touch* is not
+                 */
+                window.addEventListener('deviceorientation', function(event) {
+                    if(event.alpha != null || event.beta != null ||  event.gamma != null){
+                        YaP_Object.Privates.InputMethods.push(index);
+                    }
+                    window.removeEventListener('deviceorientation',false);
+                },false);
+       } else {
+       YaP_Object.Privates.InputMethods.push(index);
+       }
+      }
     });
 
      $("#PongTable").dblclick(function () {
@@ -484,7 +500,7 @@ if (!window.cancelAnimationFrame)
         $('#pong_interactive_toggle').text((YaP_Object.Settings.Interactive ? 'quit' : 'start') + ' pong');
 
         if (YaP_Object.Settings.Interactive) {
-            if($('#PongTable').hasClass('interactive') == false) {
+            if(!$('#PongTable').hasClass('interactive')) {
                 $('#PongTable').addClass('interactive');
             }
         } else {
