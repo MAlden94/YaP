@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2012-2014 Mitchell Lafferty <coolspeedy6 at gmail dot com>
+Copyright (C) 2012-2015 Mitchell Lafferty <coolspeedy6 at gmail dot com>
 Released under the GNU GPL.
 
 YaP (Yet another Pong) is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ This css file changes the z-index of #menu, #P1Score, #P2Score , #Ball, #P1, #P2
 */
 
 @media print {
-    #PongTable {display: none}
+  #PongTable, #pong_btn_group, #pong_pause_toggle,#pong_interactive_toggle, #pong_menu_toggle {display: none}
 }
 
-#pong_btn_group, #pong_pause_toggle,#pong_interactive_toggle, #pong_menu_toggle {
+#pong_btn_group, #pong_pause_toggle, #pong_interactive_toggle, #pong_menu_toggle {
     position: relative;
     z-index: 999999;
     display: none;

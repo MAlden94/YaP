@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2012-2014 Mitchell Lafferty <coolspeedy6 at gmail dot com>
+Copyright (C) 2012-2015 Mitchell Lafferty <coolspeedy6 at gmail dot com>
 Released under the GNU GPL.
 
 YaP (Yet another Pong) is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ Notes to self:
   (I could fix YaP_Object.Privates.ball_vx & YaP_Object.Privates.ball_vy by prefixing with init so Levels wont mess it up)
 
   need to make this program use true JS OO correctly
-  
+
   imp no save
   imp selective save
 */
@@ -76,35 +76,29 @@ if (typeof jQuery === 'undefined')
 // homemade jquery plugin to catch double keypress
 (function ($)
 {
-  $.fn.doublekeypress = function (funcCall, deltaTime)
-  {
-    var lastKeyCode = null;
-    var lastKeyTime = 0;
-    if (!$.isNumeric(deltaTime))
-      {
-        deltaTime = 600;
-      }
-    return this.each(function ()
-    {
-      $(this).keypress(function (event)
-      {
-        var newKeyCode = event.which;
-        if (newKeyCode == lastKeyCode)
-          {
-            var newKeyTime = Date.now();
-	    console.log(newKeyTime, ' - ', lastKeyTime, ' = ', newKeyTime - lastKeyTime, ' <= ', deltaTime)
-            if (newKeyTime - lastKeyTime <= deltaTime)
-              {
-                lastKeyCode = null;
-		newKeyTime  = 0;
-                return funcCall(event)
-              }
-              lastKeyTime = newKeyTime;
-          }
-          lastKeyCode = newKeyCode
-      })
-    })
-  }
+    $.fn.doublekeypress = function (funcCall, deltaTime) {
+        var lastKeyCode = null;
+        var lastKeyTime = 0;
+        if (!$.isNumeric(deltaTime)) {
+            deltaTime = 600;
+        }
+        return this.each(function () {
+            $(this).keypress(function (event) {
+                var newKeyCode = event.which;
+                if (newKeyCode == lastKeyCode) {
+                    var newKeyTime = Date.now();
+                    console.log(newKeyTime, ' - ', lastKeyTime, ' = ', newKeyTime - lastKeyTime, ' <= ', deltaTime)
+                    if (newKeyTime - lastKeyTime <= deltaTime) {
+                        lastKeyCode = null;
+                        newKeyTime  = 0;
+                        return funcCall(event)
+                    }
+                    lastKeyTime = newKeyTime;
+                }
+                lastKeyCode = newKeyCode
+            })
+        })
+    }
 })(jQuery);
 // end
 
@@ -114,7 +108,8 @@ if (typeof jQuery === 'undefined')
  * @notes This is a singleton, it will only run once
  * @return void
  **/
-var Pong = function() {
+var Pong = function()
+{
 
     Pong = function() {
         //window.console&&console.log("YaP: Pong already initalized!")
@@ -127,12 +122,17 @@ var Pong = function() {
     YaP_Object.Privates.OldInputMethod   = null;
     YaP_Object.Privates.InputMethods     = [];
     YaP_Object.Privates.InputMethodNames = {
-	  'mousemove': 'Mouse',
-	  'keydown':     'Keyboard',
-	  'touchstart': 'Touch',
-	  'touchmove':  'Drag',
-	  'deviceorientation': 'Gyroscope',
-	};
+'mousemove': 'Mouse'
+        ,
+'keydown':     'Keyboard'
+        ,
+'touchstart': 'Touch'
+        ,
+'touchmove':  'Drag'
+        ,
+'deviceorientation': 'Gyroscope'
+        ,
+    };
     YaP_Object.Privates.LatestFrameLatency = 0;
     YaP_Object.Privates.SafeFrameLatency   = 300;
     YaP_Object.Privates.title         = document.title;
@@ -162,20 +162,20 @@ var Pong = function() {
     YaP_Object.Settings.LevelChangesPaddleSize    = true;
     YaP_Object.Settings.link_velocity_of_players  = true;
     YaP_Object.Settings.FixBoundaryBug            = false; // default =  false
-    
+
     YaP_Object.Functions = new Object();
 
-   window.requestAnimationFrame = window.requestAnimationFrame       ||
-                                  window.webkitRequestAnimationFrame ||
-                                  window.mozRequestAnimationFrame    ||
-                                  window.oRequestAnimationFrame      ||
-                                  window.msRequestAnimationFrame     ||
-                                  function (callback, element) {
-                                      window.setTimeout(callback, 1000 / 60)
-                                  };
+    window.requestAnimationFrame = window.requestAnimationFrame       ||
+                                   window.webkitRequestAnimationFrame ||
+                                   window.mozRequestAnimationFrame    ||
+                                   window.oRequestAnimationFrame      ||
+                                   window.msRequestAnimationFrame     ||
+    function (callback, element) {
+        window.setTimeout(callback, 1000 / 60)
+    };
 
-if (!window.cancelAnimationFrame)
-     window.cancelAnimationFrame = clearTimeout;
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = clearTimeout;
 
 
     // rather than calling these methods multiple times we set a varible to it's value to instead, to opimize for speed
@@ -202,25 +202,28 @@ if (!window.cancelAnimationFrame)
     YaP_Object.Privates.P2InitSize = parseInt(YaP_Object.Privates.$p2.css('height'));
 
     $.each(YaP_Object.Privates.InputMethodNames, function (index, value) {
-        if ('on' + index in window){
-            if(index == 'deviceorientation') {
-                /*
-                 * f*cking device* is defined regardless of
-                 * weather or not it is supported, where as touch* is not
-                 */
-                window.addEventListener('deviceorientation', function(event) {
-                    if(event.alpha != null || event.beta != null ||  event.gamma != null){
+        if ('on' + index in window) {
+            /*
+             Lets find out if device* is accually supported
+             by seeing if the value of event.* is valid
+             if so add it to YaP_Object.Privates.InputMethods
+             */
+            if(index == 'deviceorientation' && false) { // disabled for now, doesn't work correctly.
+                var test = function(event) {
+                    if(event.alpha != null || event.beta != null ||  event.gamma != null) {
+                        //window.console&&console.log(event);
                         YaP_Object.Privates.InputMethods.push(index);
                     }
-                    window.removeEventListener('deviceorientation',false);
-                },false);
-       } else {
-       YaP_Object.Privates.InputMethods.push(index);
-       }
-      }
+                    window.removeEventListener(index, test, false);
+                }
+                window.addEventListener(index, test, false);
+            } else {
+                YaP_Object.Privates.InputMethods.push(index);
+            }
+        }
     });
 
-     $("#PongTable").dblclick(function () {
+    $("#PongTable").dblclick(function () {
         if (YaP_Object.Settings.Interactive) $('#pong_interactive_toggle').mouseup();
     });
 
@@ -228,20 +231,20 @@ if (!window.cancelAnimationFrame)
 
     $('#pong_pause_toggle').css('display', 'inline').mouseup(function () {
         YaP_Object.Settings.Paused = !YaP_Object.Settings.Paused;
-	$(window).off('focus', YaP_Object.Functions.focus);
-	if (!YaP_Object.Settings.Paused) {
-	  $(window).on('focus', YaP_Object.Functions.focus);
-	  YaP_Object.Privates.Menu = false;
-	}
+        $(window).off('focus', YaP_Object.Functions.focus);
+        if (!YaP_Object.Settings.Paused) {
+            $(window).on('focus', YaP_Object.Functions.focus);
+            YaP_Object.Privates.Menu = false;
+        }
         YaP_Object.Functions.Update();
     });
 
     $('#pong_interactive_toggle').css('display', 'inline').mouseup(function () {
-            YaP_Object.Settings.Interactive = !YaP_Object.Settings.Interactive;
-            if (!YaP_Object.Settings.Interactive) {
-                YaP_Object.Privates.Menu        = true;
-            }
-            YaP_Object.Functions.toggleMenu()
+        YaP_Object.Settings.Interactive = !YaP_Object.Settings.Interactive;
+        if (!YaP_Object.Settings.Interactive) {
+            YaP_Object.Privates.Menu        = true;
+        }
+        YaP_Object.Functions.toggleMenu()
     });
 
     YaP_Object.Functions.blur = function () {
@@ -263,10 +266,10 @@ if (!window.cancelAnimationFrame)
         for (i = 0; i <= (YaP_Object.Privates.window_height / 2); i++) {
             YaP_Object.Privates.$ball.css('top', i + 'px');
             if ( YaP_Object.Settings.FixBoundaryBug = ((YaP_Object.Privates.window_height
-                                - parseInt(YaP_Object.Privates.$ball.css('top')  ))
-                                - parseInt(YaP_Object.Privates.$ball.css('height'))
-                               != parseInt(YaP_Object.Privates.$ball.css('bottom'))
-                              )) break;
+                    - parseInt(YaP_Object.Privates.$ball.css('top')  ))
+                    - parseInt(YaP_Object.Privates.$ball.css('height'))
+                    != parseInt(YaP_Object.Privates.$ball.css('bottom'))
+                                                      )) break;
         }
     }
     //window.console&&console.log("YaP: YaP_Object.Settings.FixBoundaryBug ==", YaP_Object.Settings.FixBoundaryBug);
@@ -337,13 +340,13 @@ if (!window.cancelAnimationFrame)
     $.each(YaP_Object.Privates.InputMethods, function (index, value) {
         // $.inArray doesn't work here because typeof InputMethodNames === 'object'
         $('#PongTable #_InputMethod').append($('<option/>', {
-            value:  value,
-            text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.Privates.InputMethodNames[value] : value)
+value:  value,
+text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.Privates.InputMethodNames[value] : value)
         }))
     });
 
     $('#PongTable').find('#_AI_player, #_degreeOfMotion, #_AI_difficulty').change(function () {
-	YaP_Object.Settings[this.id.substr(1)] = parseInt(this.value);
+        YaP_Object.Settings[this.id.substr(1)] = parseInt(this.value);
     }).keyup(function () {
         $(this).change()
     });
@@ -362,7 +365,7 @@ if (!window.cancelAnimationFrame)
     });
 
     $('#PongTable').find('#_Level, #_Player1Velocity, #_Player2Velocity').change(function () {
-        YaP_Object.Settings[this.id.substr(1)] = this.value = ($.isNumeric(this.value)) ? this.value : YaP_Object.Settings[this.id.substr(1)]; 
+        YaP_Object.Settings[this.id.substr(1)] = this.value = ($.isNumeric(this.value)) ? this.value : YaP_Object.Settings[this.id.substr(1)];
         if ( YaP_Object.Settings.link_velocity_of_players) {
             switch (this.id) {
             case '_Player1Velocity':
@@ -417,8 +420,8 @@ if (!window.cancelAnimationFrame)
 
     $('#PongTable').find('#Menu, #About').each(function() {
         $(this).css( {
-	  'margin-left': -$(this).outerWidth()  / 2 + 'px',
-	  'margin-top':  -$(this).outerHeight() / 2 + 'px'
+'margin-left': -$(this).outerWidth()  / 2 + 'px',
+'margin-top':  -$(this).outerHeight() / 2 + 'px'
         }).click(function (e) {
             e.stopPropagation()
             if (this.id == 'About') $(this).fadeOut(1000);
@@ -440,25 +443,25 @@ if (!window.cancelAnimationFrame)
     /// Menu end
 
     if (typeof Storage !== 'undefined') {
-      //window.console&&console.log('YaP: Reading LocalStorage[*]:');
-      for (param in YaP_Object.Settings){
-	if (localStorage[param] === undefined){
-	    //window.console&&console.log("\t\tSkipping localStorage[", param, "] == undefined");
-	    continue;
-	}
-	//window.console&&console.log("\t\t(YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param],") = (localStorage[", param, "], ", localStorage[param], ')');
-	try {
-	  YaP_Object.Settings[param] = JSON.parse(localStorage[param]);
-	} catch (e){
-	  //window.console&&console.log("\t\tSkipping: localStorage[", param, "]: Error:",e);
-	}
-      }
+        //window.console&&console.log('YaP: Reading LocalStorage[*]:');
+        for (param in YaP_Object.Settings) {
+            if (localStorage[param] === undefined) {
+                //window.console&&console.log("\t\tSkipping localStorage[", param, "] == undefined");
+                continue;
+            }
+            //window.console&&console.log("\t\t(YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param],") = (localStorage[", param, "], ", localStorage[param], ')');
+            try {
+                YaP_Object.Settings[param] = JSON.parse(localStorage[param]);
+            } catch (e) {
+                //window.console&&console.log("\t\tSkipping: localStorage[", param, "]: Error:",e);
+            }
+        }
     }
 
     $(document).keypress(YaP_Object.Functions.GlobalKeyboardHandler);
-    $(document).doublekeypress(function (e){
-      if (e.which == 112) YaP_Object.Functions.toggleMenu()
-      }); // p key = pause
+    $(document).doublekeypress(function (e) {
+        if (e.which == 112) YaP_Object.Functions.toggleMenu()
+        }); // p key = pause
 
     /**
      * @brief This sets the params and saves them
@@ -467,33 +470,33 @@ if (!window.cancelAnimationFrame)
      **/
     YaP_Object.Functions.Update = function() {
         if (YaP_Object.Privates.Menu) {
-	    if (!YaP_Object.Privates.Blinker){
-		YaP_Object.Privates.Blinker = setInterval(function () {
-		  $('#PongTable #blink').fadeToggle(500)
-	      }, 500);
-	    }
-	    $('#PongTable #_Level').val(YaP_Object.Settings.Level);
-	    $('#PongTable #_Player1Velocity').val(YaP_Object.Settings.Player1Velocity);
-	    $('#PongTable #_Player2Velocity').val(YaP_Object.Settings.Player2Velocity);
-	    $('#PongTable #_AI_difficulty').val(YaP_Object.Settings.AI_difficulty);
-	    $('#PongTable #_AI_player').val(YaP_Object.Settings.AI_player);
-	    $('#PongTable #_InputMethod').val(YaP_Object.Settings.InputMethod).change();
-	    $('#PongTable #_degreeOfMotion').val(YaP_Object.Settings.degreeOfMotion);
-	    $('#PongTable #_DualPaddles').attr('checked', YaP_Object.Settings.DualPaddles);
-	    $('#PongTable #_AutoLevelUp').attr('checked', YaP_Object.Settings.AutoLevelUp);
-	    $('#PongTable #_Interactive').attr('checked', YaP_Object.Settings.Interactive);
-	    $('#PongTable #_Paused').attr('checked', false);
-	    $('#PongTable #_AI_player').attr('disabled', YaP_Object.Settings.DualPaddles);
-	    $('#PongTable #_link_velocity_of_players').attr('checked',  YaP_Object.Settings.link_velocity_of_players);
+            if (!YaP_Object.Privates.Blinker) {
+                YaP_Object.Privates.Blinker = setInterval(function () {
+                    $('#PongTable #blink').fadeToggle(500)
+                }, 500);
+            }
+            $('#PongTable #_Level').val(YaP_Object.Settings.Level);
+            $('#PongTable #_Player1Velocity').val(YaP_Object.Settings.Player1Velocity);
+            $('#PongTable #_Player2Velocity').val(YaP_Object.Settings.Player2Velocity);
+            $('#PongTable #_AI_difficulty').val(YaP_Object.Settings.AI_difficulty);
+            $('#PongTable #_AI_player').val(YaP_Object.Settings.AI_player);
+            $('#PongTable #_InputMethod').val(YaP_Object.Settings.InputMethod).change();
+            $('#PongTable #_degreeOfMotion').val(YaP_Object.Settings.degreeOfMotion);
+            $('#PongTable #_DualPaddles').attr('checked', YaP_Object.Settings.DualPaddles);
+            $('#PongTable #_AutoLevelUp').attr('checked', YaP_Object.Settings.AutoLevelUp);
+            $('#PongTable #_Interactive').attr('checked', YaP_Object.Settings.Interactive);
+            $('#PongTable #_Paused').attr('checked', false);
+            $('#PongTable #_AI_player').attr('disabled', YaP_Object.Settings.DualPaddles);
+            $('#PongTable #_link_velocity_of_players').attr('checked',  YaP_Object.Settings.link_velocity_of_players);
 
-	    $('#PongTable #Menu').fadeIn(1000);
+            $('#PongTable #Menu').fadeIn(1000);
         } else {
             clearInterval(YaP_Object.Privates.Blinker);
             YaP_Object.Privates.Blinker = null;
             $('#PongTable #Menu, #About').fadeOut(500);
         }
 
-	YaP_Object.Functions.UpdateLevel(2);
+        YaP_Object.Functions.UpdateLevel(2);
 
         $('#pong_menu_toggle').text((YaP_Object.Privates.Menu               ? 'close' : 'open') + ' pong menu');
         $('#pong_pause_toggle').text((YaP_Object.Settings.Paused            ? 'play' : 'pause') + ' pong');
@@ -507,15 +510,15 @@ if (!window.cancelAnimationFrame)
             $('#PongTable').removeClass('interactive');
         }
 
-         switch (YaP_Object.Privates.OldInputMethod){
-           case  'deviceorientation':
-           case  'touchstart':
-           case  'touchend':
-           case  'touchmove':
-             window.removeEventListener(YaP_Object.Settings.InputMethod, YaP_Object.Functions.EventHandler);
-             break;
-           default:
-             $(window).off(YaP_Object.Privates.OldInputMethod,  YaP_Object.Functions.EventHandler)
+        switch (YaP_Object.Privates.OldInputMethod) {
+        case  'deviceorientation':
+        case  'touchstart':
+        case  'touchend':
+        case  'touchmove':
+            window.removeEventListener(YaP_Object.Settings.InputMethod, YaP_Object.Functions.EventHandler);
+            break;
+        default:
+            $(window).off(YaP_Object.Privates.OldInputMethod,  YaP_Object.Functions.EventHandler)
         }
 
         if (jQuery.inArray(YaP_Object.Settings.InputMethod, YaP_Object.Privates.InputMethods) == -1) {
@@ -526,25 +529,25 @@ if (!window.cancelAnimationFrame)
         if (YaP_Object.Settings.Interactive) {
             //window.console&&console.log('YaP: InputMethod selected:', YaP_Object.Settings.InputMethod);
             YaP_Object.Privates.OldInputMethod = YaP_Object.Settings.InputMethod;
-                  switch (YaP_Object.Privates.OldInputMethod){
-                   case  'deviceorientation':
-                    case  'touchstart':
-                    case  'touchend':
-                    case  'touchmove':
-                      window.addEventListener(YaP_Object.Settings.InputMethod, YaP_Object.Functions.EventHandler);
-                      break;
-                    default:
-                      $(window).on(YaP_Object.Settings.InputMethod,  YaP_Object.Functions.EventHandler)
-           }
+            switch (YaP_Object.Privates.OldInputMethod) {
+            case  'deviceorientation':
+            case  'touchstart':
+            case  'touchend':
+            case  'touchmove':
+                window.addEventListener(YaP_Object.Settings.InputMethod, YaP_Object.Functions.EventHandler);
+                break;
+            default:
+                $(window).on(YaP_Object.Settings.InputMethod,  YaP_Object.Functions.EventHandler)
+            }
         }
 
-        if (YaP_Object.Settings.DualPaddles){
-	  YaP_Object.Settings.AI_player = 0;
-	}
+        if (YaP_Object.Settings.DualPaddles) {
+            YaP_Object.Settings.AI_player = 0;
+        }
 
         if (!YaP_Object.Settings.Paused) {
             if (!YaP_Object.Privates.FrameID) {
-                 YaP_Object.Privates.FrameID = window.requestAnimationFrame(YaP_Object.Functions._newframe);
+                YaP_Object.Privates.FrameID = window.requestAnimationFrame(YaP_Object.Functions._newframe);
             }
         } else {
             window.cancelAnimationFrame(YaP_Object.Privates.FrameID);
@@ -552,15 +555,15 @@ if (!window.cancelAnimationFrame)
         }
 
         if (typeof Storage !== 'undefined') {
-	  //window.console&&console.log('YaP: Writing LocalStorage[*]:');
-	  for (param in YaP_Object.Settings){
-	      //window.console&&console.log("\t\t(localStorage[", param, "], ", localStorage[param],") = (YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param], ')');
-	      try {
-	          localStorage[param] = JSON.stringify(YaP_Object.Settings[param]);
-	      } catch (e){
-	          //window.console&&console.log("\t\tSkipping: YaP_Object.Settings[", param, "]: Error:", e);
-	      }
-	  }
+            //window.console&&console.log('YaP: Writing LocalStorage[*]:');
+            for (param in YaP_Object.Settings) {
+                //window.console&&console.log("\t\t(localStorage[", param, "], ", localStorage[param],") = (YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param], ')');
+                try {
+                    localStorage[param] = JSON.stringify(YaP_Object.Settings[param]);
+                } catch (e) {
+                    //window.console&&console.log("\t\tSkipping: YaP_Object.Settings[", param, "]: Error:", e);
+                }
+            }
         }
 
     }
@@ -596,25 +599,25 @@ if (!window.cancelAnimationFrame)
         case 1:
             YaP_Object.Settings.Level--;
             break;
-	default:
-	  // noop
+        default:
+            // noop
         }
 
         YaP_Object.Settings.Level = constrain(YaP_Object.Settings.Level, 1, 100);
         //if (YaP_Object.Settings.LevelChangesBallSpeed) {
-            YaP_Object.Privates.ball_vy = (YaP_Object.Privates.ball_vy < 0 ? -1 : 1) * YaP_Object.Settings.Level;
-            YaP_Object.Privates.ball_vx = (YaP_Object.Privates.ball_vx < 0 ? -1 : 1) * YaP_Object.Settings.Level;
+        YaP_Object.Privates.ball_vy = (YaP_Object.Privates.ball_vy < 0 ? -1 : 1) * YaP_Object.Settings.Level;
+        YaP_Object.Privates.ball_vx = (YaP_Object.Privates.ball_vx < 0 ? -1 : 1) * YaP_Object.Settings.Level;
         //}
         if (YaP_Object.Settings.LevelChangesPaddleSize) {
             YaP_Object.Privates.$p1.css('height', constrain(Math.ceil(YaP_Object.Privates.P1InitSize - ((YaP_Object.Settings.Level * 2.5) / 100) * YaP_Object.Privates.P1InitSize), 15, YaP_Object.Privates.P1InitSize) + 'px');
             YaP_Object.Privates.$p2.css('height', constrain(Math.ceil(YaP_Object.Privates.P2InitSize - ((YaP_Object.Settings.Level * 2.5) / 100) * YaP_Object.Privates.P2InitSize), 15, YaP_Object.Privates.P2InitSize) + 'px');
         }
 
-        if (YaP_Object.Settings.Interactive){
-	  document.title = 'Pong Level: ' + YaP_Object.Settings.Level; // YaP_Object.Privates.title + 
-	} else {
-	  document.title = YaP_Object.Privates.title;
-	}
+        if (YaP_Object.Settings.Interactive) {
+            document.title = 'Pong Level: ' + YaP_Object.Settings.Level; // YaP_Object.Privates.title +
+        } else {
+            document.title = YaP_Object.Privates.title;
+        }
     }
 
 
@@ -626,7 +629,7 @@ if (!window.cancelAnimationFrame)
     YaP_Object.Functions._newframe = function () {
         var start = (new Date()).getMilliseconds();
         if (!YaP_Object.Settings.Paused) {
-           window.requestAnimationFrame(YaP_Object.Functions._newframe);
+            window.requestAnimationFrame(YaP_Object.Functions._newframe);
         }
         if (YaP_Object.Settings.FixBoundaryBug) {
             YaP_Object.Privates.$p1.css('bottom', (YaP_Object.Privates.window_height - parseInt(YaP_Object.Privates.$p1.css('top'))) - parseInt(YaP_Object.Privates.$p1.css('height')) + 'px');
@@ -655,36 +658,36 @@ if (!window.cancelAnimationFrame)
         p2_height = parseInt(YaP_Object.Privates.$p2.css('height'));
 
         //if (YaP_Object.Settings.Interactive && !YaP_Object.Settings.DualPaddles) {  // && (YaP_Object.Settings.AI_player
-            if (!YaP_Object.Settings.Interactive) {
-                YaP_Object.Settings.AI_player = (YaP_Object.Privates.ball_vx < 0) ? 1 : 2;
-            }
-            if ((YaP_Object.Settings.AI_player == 1
-                 && YaP_Object.Privates.ball_vx < 0)
-                || (YaP_Object.Settings.AI_player == 2
-                    && YaP_Object.Privates.ball_vx > 0)) {
+        if (!YaP_Object.Settings.Interactive) {
+            YaP_Object.Settings.AI_player = (YaP_Object.Privates.ball_vx < 0) ? 1 : 2;
+        }
+        if ((YaP_Object.Settings.AI_player == 1
+             && YaP_Object.Privates.ball_vx < 0)
+            || (YaP_Object.Settings.AI_player == 2
+                && YaP_Object.Privates.ball_vx > 0)) {
 
-                var tmp_id = (YaP_Object.Settings.AI_player == 1) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
-                var ball_pos = ball_top - (parseInt($(tmp_id).css('height')) / 2) + YaP_Object.Privates.AI_Error * (YaP_Object.Privates.ball_vy < 0 ? -1 : 1);
-                var AI_vy = (YaP_Object.Settings.InputMethod == 'keydown') ? (YaP_Object.Settings.AI_player == 1 ? YaP_Object.Settings.Player1Velocity : YaP_Object.Settings.Player2Velocity) : 1;
+            var tmp_id = (YaP_Object.Settings.AI_player == 1) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
+            var ball_pos = ball_top - (parseInt($(tmp_id).css('height')) / 2) + YaP_Object.Privates.AI_Error * (YaP_Object.Privates.ball_vy < 0 ? -1 : 1);
+            var AI_vy = (YaP_Object.Settings.InputMethod == 'keydown') ? (YaP_Object.Settings.AI_player == 1 ? YaP_Object.Settings.Player1Velocity : YaP_Object.Settings.Player2Velocity) : 1;
 
-	    if (YaP_Object.Privates.ball_vy < 0) {
-		    for (i = parseInt($(tmp_id).css('top')); i >= ball_pos; i -= AI_vy) {
-			$(tmp_id).css('top', i + 'px');
-		    }
-                } else {
-                    for (i = parseInt($(tmp_id).css('top')); i <= ball_pos; i += AI_vy) {
-                        $(tmp_id).css('top', i + 'px');
-                    }
+            if (YaP_Object.Privates.ball_vy < 0) {
+                for (i = parseInt($(tmp_id).css('top')); i >= ball_pos; i -= AI_vy) {
+                    $(tmp_id).css('top', i + 'px');
                 }
-                if (parseInt($(tmp_id).css('top'))
-                    + parseInt($(tmp_id).css('height')) > YaP_Object.Privates.window_height) {
-                    $(tmp_id).css('top',
-                                  (YaP_Object.Privates.window_height
-                                   - parseInt($(tmp_id).css('height')))
-                                  + 'px');
+            } else {
+                for (i = parseInt($(tmp_id).css('top')); i <= ball_pos; i += AI_vy) {
+                    $(tmp_id).css('top', i + 'px');
                 }
-                if (parseInt($(tmp_id).css('top')) < 0) $(tmp_id).css('top', '0px');
             }
+            if (parseInt($(tmp_id).css('top'))
+                + parseInt($(tmp_id).css('height')) > YaP_Object.Privates.window_height) {
+                $(tmp_id).css('top',
+                              (YaP_Object.Privates.window_height
+                               - parseInt($(tmp_id).css('height')))
+                              + 'px');
+            }
+            if (parseInt($(tmp_id).css('top')) < 0) $(tmp_id).css('top', '0px');
+        }
         //}
         if (ball_top <= Math.abs(YaP_Object.Privates.ball_vy)
             || ball_bottom <= Math.abs(YaP_Object.Privates.ball_vy)) {
@@ -753,24 +756,24 @@ if (!window.cancelAnimationFrame)
 
         // reduced to one call for speed
         YaP_Object.Privates.$ball.css( {
-            'top':  ball_top  + 'px',
-            'left': ball_left + 'px',
+'top':  ball_top  + 'px',
+'left': ball_left + 'px',
         });
         //window.console&&console.log((new Date()).getMilliseconds() - start);
-	if ((YaP_Object.Privates.LatestFrameLatency = (new Date()).getMilliseconds() - start) > YaP_Object.Privates.SafeFrameLatency){
-	  if (YaP_Object.Settings.Interactive){
-	      YaP_Object.Settings.Interactive = false;
-	      alert("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
-	  } else {
-	      console.log("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
-	  }
-	  $('#pong_pause_toggle').mouseup(); // ughhhhh
-	  //YaP_Object.Settings.Paused = true;
-	  //YaP_Object.Functions.Update();
-	}
+        if ((YaP_Object.Privates.LatestFrameLatency = (new Date()).getMilliseconds() - start) > YaP_Object.Privates.SafeFrameLatency) {
+            if (YaP_Object.Settings.Interactive) {
+                YaP_Object.Settings.Interactive = false;
+                alert("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
+            } else {
+                console.log("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
+            }
+            $('#pong_pause_toggle').mouseup(); // ughhhhh
+            //YaP_Object.Settings.Paused = true;
+            //YaP_Object.Functions.Update();
+        }
     }
 
-   
+
 
 
     /**
@@ -778,7 +781,7 @@ if (!window.cancelAnimationFrame)
      * @notes
      * @return void
      **/
-        YaP_Object.Functions.SetAI_Error = function (player_height) {
+    YaP_Object.Functions.SetAI_Error = function (player_height) {
         YaP_Object.Privates.AI_Error = Math.random() * (2 * player_height * (1 - (YaP_Object.Settings.AI_difficulty / 100))) * (Math.random() > 0.5 ? 1 : -1);
         //YaP_Object.Privates.ball_vx  += Math.random() *  (Math.random() > 0.5 ? 1 : -1);
         //YaP_Object.Privates.ball_vy  += Math.random() *  (Math.random() > 0.5 ? 1 : -1);
@@ -810,28 +813,28 @@ if (!window.cancelAnimationFrame)
      * @return true
      **/
     YaP_Object.Functions.deviceorientationHandler = function (event) {
-        if (event.gamma == null || event.beta == null){
-	    // because chrome defines 'deviceorientationHandler' regardless if device accually has a Gyroscope
-	    //window.console&&console.log('YaP: Unsupported event detected: InputMethod reset to mousemove');
+        if (event.gamma == null || event.beta == null) {
+            // because chrome defines 'deviceorientationHandler' regardless if device accually has a Gyroscope
+            //window.console&&console.log('YaP: Unsupported event detected: InputMethod reset to mousemove');
             YaP_Object.Settings.InputMethod = 'mousemove';
-	    YaP_Object.Functions.Update();
-	    return true;
+            YaP_Object.Functions.Update();
+            return true;
         }
-      if (YaP_Object.Settings.DualPaddles) {
+        if (YaP_Object.Settings.DualPaddles) {
             var $real_player = YaP_Object.Privates.$p1.add(YaP_Object.Privates.$p2);
-      } else {
+        } else {
             var $real_player = (YaP_Object.Settings.AI_player == 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
-      }
+        }
 
         $real_player.css('top', map(
                              constrain(
                                  (Math.abs(window.orientation) == 90)
-                                   ? event.gamma : event.beta,
-                                  -YaP_Object.Settings.degreeOfMotion,
-                                  YaP_Object.Settings.degreeOfMotion
-                                 ),
+                                 ? event.gamma : event.beta,
                                  -YaP_Object.Settings.degreeOfMotion,
-                                  YaP_Object.Settings.degreeOfMotion,
+                                 YaP_Object.Settings.degreeOfMotion
+                             ),
+                             -YaP_Object.Settings.degreeOfMotion,
+                             YaP_Object.Settings.degreeOfMotion,
                              0, (YaP_Object.Privates.window_height - parseInt($real_player.css('height')))
                          ) + 'px');
 
@@ -844,22 +847,23 @@ if (!window.cancelAnimationFrame)
      * @return true
      **/
     YaP_Object.Functions.TouchHandler = function (event) {
+        event.preventDefault();
         // half of screen allocated to P1, other half P2
         var $real_player = null;
         if  (YaP_Object.Settings.DualPaddles) {
             $real_player = YaP_Object.Privates.$p1.add(YaP_Object.Privates.$p2);
         } else {
-	    if (YaP_Object.Settings.AI_player > 0){
-	      $real_player = (YaP_Object.Settings.AI_player == 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
-	    } else {
-	      $real_player = (event.touches[0].pageX < YaP_Object.Privates.window_width / 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
-	    }
+            if (YaP_Object.Settings.AI_player > 0) {
+                $real_player = (YaP_Object.Settings.AI_player == 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
+            } else {
+                $real_player = (event.touches[0].pageX < YaP_Object.Privates.window_width / 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
+            }
         }
         $real_player.css('top',constrain(
                              (event.touches[0].pageY -
                               $(document).scrollTop()) - (parseInt($real_player.css('height')) / 2),
-                              0 , (YaP_Object.Privates.window_height - parseInt($real_player.css('height')))
-			      ) + 'px');
+                             0 , (YaP_Object.Privates.window_height - parseInt($real_player.css('height')))
+                         ) + 'px');
 
         return true;
     }
@@ -874,12 +878,12 @@ if (!window.cancelAnimationFrame)
         if (YaP_Object.Settings.DualPaddles) {
             var $real_player = YaP_Object.Privates.$p1.add(YaP_Object.Privates.$p2);
         } else {
-            if (YaP_Object.Settings.AI_player > 0){
-	      $real_player = (YaP_Object.Settings.AI_player == 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
-	    } else {
-	      $real_player = (event.pageX < YaP_Object.Privates.window_width / 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
-	    }
-	}  
+            if (YaP_Object.Settings.AI_player > 0) {
+                $real_player = (YaP_Object.Settings.AI_player == 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
+            } else {
+                $real_player = (event.pageX < YaP_Object.Privates.window_width / 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
+            }
+        }
 
         $real_player.css('top', constrain(
                              Math.round(
@@ -895,7 +899,7 @@ if (!window.cancelAnimationFrame)
      * @notes
      * @return true
      **/
-   YaP_Object.Functions.KeyboardHandler = function (event) {
+    YaP_Object.Functions.KeyboardHandler = function (event) {
         //document.title=event.which;
         //document.title+= " " + String.fromCharCode(document.title);
         p1_top    = parseInt(YaP_Object.Privates.$p1.css('top'));
@@ -940,16 +944,16 @@ if (!window.cancelAnimationFrame)
         }
 
         YaP_Object.Privates.$p1.css( {
-         'top': p1_top + 'px',
+'top': p1_top + 'px',
         });
 
         YaP_Object.Privates.$p2.css( {
-         'top': p2_top + 'px',
+'top': p2_top + 'px',
         });
 
         return true;
     }
-   YaP_Object.Functions.GlobalKeyboardHandler = function (event) {
+    YaP_Object.Functions.GlobalKeyboardHandler = function (event) {
         if (!YaP_Object.Settings.Interactive) return;
         switch (event.which) {
         case 187:
