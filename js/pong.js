@@ -74,6 +74,7 @@ if (typeof jQuery === 'undefined')
 }
 
 // homemade jquery plugin to catch double keypress
+// need support for double tap
 (function ($)
 {
     $.fn.doublekeypress = function (funcCall, deltaTime) {
@@ -154,8 +155,8 @@ var Pong = function()
     YaP_Object.Settings.AI_difficulty   = 50;          // 0 - 100 (default =  50)
     YaP_Object.Settings.AI_player       = 2;           // 0 =  off  --- 1 =  P1 is cpu  /  2 =  P2 is cpu (default =  2)
     YaP_Object.Settings.degreeOfMotion  = 12;
-    YaP_Object.Settings.GyroOffset      = [0, 0]; 
-    YaP_Object.Settings.InputMethod     = 'mousemove'; // default =  mousemove
+    YaP_Object.Settings.GyroOffset      = [0, 0];
+    YaP_Object.Settings.InputMethod     = 'deviceorientation'; // default =  mousemove
     YaP_Object.Settings.DualPaddles     = false;       // default =  false
     YaP_Object.Settings.AutoLevelUp     = true;        // default =  false
     YaP_Object.Settings.Interactive     = false;       // default =  false
@@ -301,13 +302,13 @@ var Pong = function()
             </tr>\
             <tr>\
                 <td>Input method</td>\
-                <td></td>\
                 <td id="degreeOfMotionlabel" style="display: none">&deg; Of Motion</td>\
+                <td></td>\
             </tr>\
             <tr>\
             <td><select id="_InputMethod"></select></td>\
-            <td></td>\
-            <td><input id="_degreeOfMotion" max="360" min="0" type="number" style="display: none"><button id="Calibrate">Calibrate</button></td>\
+            <td><input id="_degreeOfMotion" max="360" min="0" type="number" style="display: none"></td>\
+            <td><button id="Calibrate">Calibrate</button></td>\
             </td>\
         </table>\
         <table class="PlayerVelocity" style="display: none">\
