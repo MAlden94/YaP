@@ -147,6 +147,8 @@ var Pong = function()
     YaP_Object.Privates.Menu          = false; // default =  false
     YaP_Object.Privates.ball_vy       = 5;     // velocity (also set by Level) (default =  5)
     YaP_Object.Privates.ball_vx       = 5;     // ditto
+    YaP_Object.Privates.beta          = 0;
+    YaP_Object.Privates.gamma         = 0;
 
     YaP_Object.Settings = new Object();
     YaP_Object.Settings.Level           = 5;           // Level (default =  5)
@@ -280,9 +282,15 @@ var Pong = function()
     YaP_Object.Privates.$ball.css('top',  YaP_Object.Privates.window_height / 2 + 'px');
 
     /// Menu start
+    // I fucking hate using tables
     $('#PongTable').append('<div id="Menu">\
-        <span id="blink">Double press the p key to close.</span><br>\
+        <span id="blink">Click outside the perimeter to close.</span><br>\
         <table>\
+           <tr>\
+               <td>Level </td>\
+               <td><input id="_Level" max="100" min="1" type="number"></td>\
+               <td></td>\
+           </tr>\
             <tr>\
                 <td>\
                 <select id="_AI_player">\
@@ -293,11 +301,6 @@ var Pong = function()
                 </td>\
                 <td><input id="_AI_difficulty" max="100" min="0" type="number"></td>\
                 <td>% difficulty</td>\
-                <td></td>\
-            </tr>\
-            <tr>\
-                <td>Level </td>\
-                <td><input id="_Level" max="100" min="1" type="number"></td>\
                 <td></td>\
             </tr>\
             <tr>\
@@ -325,15 +328,23 @@ var Pong = function()
             </tr>\
         </table>\
         <hr>\
+        <table>\
+        <tr>\
+        <td></td>\
+        <td>\
         <input id="_DualPaddles" type="checkbox">Dual Paddles<br>\
         <input id="_AutoLevelUp" type="checkbox">Automatically Level up<br>\
         <input id="_Interactive" type="checkbox">Interactive<br>\
         <input id="_Paused"      type="checkbox">Paused<br>\
-        <span style="display: inline">\
-              <a id="ResetScores"   href="#">Reset scores</a>&nbsp;\
-              <a id="ResetSettings" href="#">Default settings</a>\
+        <span style="display: inline; text-align: center">\
+        <a id="ResetScores"   href="#">Reset scores</a>&nbsp;\
+        <a id="ResetSettings" href="#">Default settings</a>\
         </span><br>\
         +/-: Level | A/Z: P1 | J/M: P2 | <a id="Info" href="#">Info</a><br>\
+        </td>\
+        <td></td>\
+        </tr>\
+        </table>\
         </div><div id="About">Copyright (C) 2012-2013 Mitchell Lafferty &lt;<a href="http://linuxrules94.users.sf.net/">http://linuxrules94.users.sf.net/</a>&gt; <coolspeedy6 at gmail dot com><br>\
         Released under the GNU GPL.<br>\
         Please read the source code for more info. (pong.js)<br>\
@@ -829,8 +840,14 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
             return true;
         }
         
+        YaP_Object.Privates.gamma = (YaP_Object.Privates.gamma + event.gamma) / 2;
+	YaP_Object.Privates.beta  = (YaP_Object.Privates.beta  + event.beta)  / 2;
+        
+	console.log(YaP_Object.Privates.beta);
+	console.log(YaP_Object.Privates.gamma);
         if ($('#PongTable #Calibrate').text() == 'Confirm'){
-            YaP_Object.Settings.GyroOffset = [event.beta, event.gamma];
+	    var index = Math.abs(window.orientation) == 90;
+	    YaP_Object.Settings.GyroOffset[index] = index ? YaP_Object.Privates.gamma : YaP_Object.Privates.beta;
             return;
         }
 
@@ -843,8 +860,8 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
         $real_player.css('top', map(
                              constrain(
                                  (Math.abs(window.orientation) == 90)
-                                 ? event.gamma - YaP_Object.Settings.GyroOffset[1]
-                                 : event.beta  - YaP_Object.Settings.GyroOffset[0],
+				 ? YaP_Object.Privates.gamma - YaP_Object.Settings.GyroOffset[1]
+				 : YaP_Object.Privates.beta  - YaP_Object.Settings.GyroOffset[0],
                                 -YaP_Object.Settings.degreeOfMotion,
                                  YaP_Object.Settings.degreeOfMotion
                              ),
