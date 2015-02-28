@@ -840,16 +840,16 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
             return true;
         }
 
-        if (window.location.hash = "#DEBUG"){
+        if (window.location.hash == "#DEBUG"){
             YaP_Object.Privates.gamma = (YaP_Object.Privates.gamma + event.gamma) / 2; 
 	    YaP_Object.Privates.beta  = (YaP_Object.Privates.beta  + event.beta)  / 2;
+	    console.log(YaP_Object.Privates.beta);
+	    console.log(YaP_Object.Privates.gamma);
 	} else {
 	  YaP_Object.Privates.gamma = event.gamma; 
 	  YaP_Object.Privates.beta  = event.beta;
 	}
 
-	console.log(YaP_Object.Privates.beta);
-	console.log(YaP_Object.Privates.gamma);
         if ($('#PongTable #Calibrate').text() == 'Confirm'){
 	    var index = Math.abs(window.orientation) == 90;
 	    YaP_Object.Settings.GyroOffset[index] = index ? YaP_Object.Privates.gamma : YaP_Object.Privates.beta;
