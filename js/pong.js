@@ -147,8 +147,11 @@ var Pong = function()
     YaP_Object.Privates.Menu          = false; // default =  false
     YaP_Object.Privates.ball_vy       = 5;     // velocity (also set by Level) (default =  5)
     YaP_Object.Privates.ball_vx       = 5;     // ditto
+    
+    /*
     YaP_Object.Privates.beta          = 0;
     YaP_Object.Privates.gamma         = 0;
+    */
 
     YaP_Object.Settings = new Object();
     YaP_Object.Settings.Level           = 5;           // Level (default =  5)
@@ -839,20 +842,20 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
             YaP_Object.Functions.Update();
             return true;
         }
-
+/*
         if (window.location.hash == "#DEBUG"){
             YaP_Object.Privates.gamma = (YaP_Object.Privates.gamma + event.gamma) / 2; 
 	    YaP_Object.Privates.beta  = (YaP_Object.Privates.beta  + event.beta)  / 2;
-	    console.log(YaP_Object.Privates.beta);
+	    console.log(event);
 	    console.log(YaP_Object.Privates.gamma);
 	} else {
 	  YaP_Object.Privates.gamma = event.gamma; 
 	  YaP_Object.Privates.beta  = event.beta;
 	}
-
+*/
         if ($('#PongTable #Calibrate').text() == 'Confirm'){
 	    var index = Math.abs(window.orientation) == 90;
-	    YaP_Object.Settings.GyroOffset[index] = index ? YaP_Object.Privates.gamma : YaP_Object.Privates.beta;
+	    YaP_Object.Settings.GyroOffset[index] = index ? event.gamma : event.beta;
             return;
         }
 
@@ -861,19 +864,19 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
         } else {
             var $real_player = (YaP_Object.Settings.AI_player == 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
         }
-
-        $real_player.css('top', map(
-                             constrain(
-                                 (Math.abs(window.orientation) == 90)
-				 ? YaP_Object.Privates.gamma - YaP_Object.Settings.GyroOffset[1]
-				 : YaP_Object.Privates.beta  - YaP_Object.Settings.GyroOffset[0],
-                                -YaP_Object.Settings.degreeOfMotion,
-                                 YaP_Object.Settings.degreeOfMotion
-                             ),
-                            -YaP_Object.Settings.degreeOfMotion,
-                             YaP_Object.Settings.degreeOfMotion,
-                             0, (YaP_Object.Privates.window_height - parseInt($real_player.css('height')))
-                         ) + 'px');
+        
+	$real_player.css('top', map(
+	  constrain(
+	    (Math.abs(window.orientation) == 90)
+	    ? event.gamma - YaP_Object.Settings.GyroOffset[1]
+	    : event.beta  - YaP_Object.Settings.GyroOffset[0],
+	     -YaP_Object.Settings.degreeOfMotion,
+	     YaP_Object.Settings.degreeOfMotion
+	  ),
+	  -YaP_Object.Settings.degreeOfMotion,
+	  YaP_Object.Settings.degreeOfMotion,
+	  0, (YaP_Object.Privates.window_height - parseInt($real_player.css('height')))
+	) + 'px');
 
         return true;
     }
