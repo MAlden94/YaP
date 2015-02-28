@@ -154,6 +154,7 @@ var Pong = function()
     YaP_Object.Settings.AI_difficulty   = 50;          // 0 - 100 (default =  50)
     YaP_Object.Settings.AI_player       = 2;           // 0 =  off  --- 1 =  P1 is cpu  /  2 =  P2 is cpu (default =  2)
     YaP_Object.Settings.degreeOfMotion  = 12;
+    YaP_Object.Settings.GyroOffset      = [0, 0]; 
     YaP_Object.Settings.InputMethod     = 'mousemove'; // default =  mousemove
     YaP_Object.Settings.DualPaddles     = false;       // default =  false
     YaP_Object.Settings.AutoLevelUp     = true;        // default =  false
@@ -306,7 +307,7 @@ var Pong = function()
             <tr>\
             <td><select id="_InputMethod"></select></td>\
             <td></td>\
-            <td><input id="_degreeOfMotion" max="360" min="0" type="number" style="display: none"></td>\
+            <td><input id="_degreeOfMotion" max="360" min="0" type="number" style="display: none"><button id="Calibrate">Calibrate</button></td>\
             </td>\
         </table>\
         <table class="PlayerVelocity" style="display: none">\
@@ -352,10 +353,10 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
     });
 
     $('#PongTable #_InputMethod').change(function () {
-        $('#PongTable').find('.PlayerVelocity, #_degreeOfMotion, #degreeOfMotionlabel').hide();
+      $('#PongTable').find('.PlayerVelocity, #_degreeOfMotion, #degreeOfMotionlabel, #Calibrate').hide();
         switch (this.value) {
         case 'deviceorientation':
-            $('#PongTable').find('#_degreeOfMotion, #degreeOfMotionlabel').show();
+	  $('#PongTable').find('#_degreeOfMotion, #degreeOfMotionlabel, #Calibrate').show();
             break;
         case 'keydown':
             $('#PongTable .PlayerVelocity').show();
@@ -402,9 +403,16 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
         }
     });
 
-    $('#PongTable').find('#ResetScores, #ResetSettings, #Info').click(function (e) {
+    $('#PongTable').find('#Calibrate, #ResetScores, #ResetSettings, #Info').click(function (e) {
         e.preventDefault();
         switch (this.id) {
+        case 'Calibrate':
+           if($('#PongTable #Calibrate').text() == 'Confirm'){
+              $('#PongTable #Calibrate').text('Calibrate');
+           } else {
+              $('#PongTable #Calibrate').text('Confirm');
+           }
+           break;
         case 'ResetScores':
             YaP_Object.Privates.$p1_score.add(YaP_Object.Privates.$p2_score).text(0);
             break;
@@ -814,12 +822,17 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
      **/
     YaP_Object.Functions.deviceorientationHandler = function (event) {
         if (event.gamma == null || event.beta == null) {
-            // because chrome defines 'deviceorientationHandler' regardless if device accually has a Gyroscope
             //window.console&&console.log('YaP: Unsupported event detected: InputMethod reset to mousemove');
             YaP_Object.Settings.InputMethod = 'mousemove';
             YaP_Object.Functions.Update();
             return true;
         }
+        
+        if ($('#PongTable #Calibrate').text() == 'Confirm'){
+            YaP_Object.Settings.GyroOffset = [event.beta, event.gamma];
+            return;
+        }
+
         if (YaP_Object.Settings.DualPaddles) {
             var $real_player = YaP_Object.Privates.$p1.add(YaP_Object.Privates.$p2);
         } else {
@@ -829,11 +842,12 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
         $real_player.css('top', map(
                              constrain(
                                  (Math.abs(window.orientation) == 90)
-                                 ? event.gamma : event.beta,
-                                 -YaP_Object.Settings.degreeOfMotion,
+                                 ? event.gamma - YaP_Object.Settings.GyroOffset[1]
+                                 : event.beta  - YaP_Object.Settings.GyroOffset[0],
+                                -YaP_Object.Settings.degreeOfMotion,
                                  YaP_Object.Settings.degreeOfMotion
                              ),
-                             -YaP_Object.Settings.degreeOfMotion,
+                            -YaP_Object.Settings.degreeOfMotion,
                              YaP_Object.Settings.degreeOfMotion,
                              0, (YaP_Object.Privates.window_height - parseInt($real_player.css('height')))
                          ) + 'px');

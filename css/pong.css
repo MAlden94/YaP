@@ -28,16 +28,33 @@ when pong is interactive your webpage is not.
 */
 
 @media print {
-  #PongTable, #pong_btn_group, #pong_pause_toggle,#pong_interactive_toggle, #pong_menu_toggle {display: none}
+  /* hide from printers */
+  #PongTable, #pong_btn_group, #pong_pause_toggle, #pong_interactive_toggle, #pong_menu_toggle {display: none}
 }
 
 #pong_btn_group, #pong_pause_toggle, #pong_interactive_toggle, #pong_menu_toggle {
+/* 
+* keep above pong table
+* and initialize in a 
+* hidden state so it doesn't
+* show if js fails to run
+*/
     position: relative;
     z-index: 999999;
     display: none;
 }
 
 #PongTable {
+/* 
+ * initalize pong table
+ * below webpage content
+ * so it doesn't interfere
+ * with user when pong is 
+ * non interactive also
+ * make pong table follow
+ * scrolling unless browser
+ * does not support this
+ */
     z-index: -9999;
     position: fixed !important;
     position: absolute;
@@ -59,12 +76,35 @@ when pong is interactive your webpage is not.
     border-color: #0F0;
 }
 #PongTable.interactive {
+/* 
+ * Make pong table modal
+ * by setting it above
+ * webage content and
+ * let user interact
+ * with the pong table
+ * only, blocking webpage
+ * interaction, and allowing
+ * interaction with the pong
+ * start/pause buttons, set
+ * background semi-tranparent
+ * unless browser does not 
+ * support this
+ */
     z-index: 9999;
     background: rgba(0,0,0,0.6) !important;
     background: #000;
 }
 
 #PongTable #Menu, #PongTable #About {
+/* 
+ * Make pong modal
+ * and let user interact
+ * with it, block webpage
+ * interaction, set
+ * background semi-tranparent
+ * unless browser does not
+ * support this
+ */
     z-index: inherit; /* 9999 */
     position: fixed !important;
     position: absolute;
@@ -75,6 +115,9 @@ when pong is interactive your webpage is not.
 }
 
 #PongTable table {
+/* 
+ * Center pong menu
+ */
     margin-left:  auto; 
     margin-right: auto;
     text-align:   left;
@@ -95,6 +138,12 @@ when pong is interactive your webpage is not.
 }
 
 #PongTable #P1Score {
+/* 
+ * put score on left
+ * and make it follow
+ * scrolling unless
+ * browser can't support it
+ */
     position: fixed !important;
     position: absolute;
     top: 5px;
@@ -103,6 +152,12 @@ when pong is interactive your webpage is not.
 }
 
 #PongTable #P2Score {
+/* 
+ * put score on right
+ * and make it follow
+ * scrolling unless
+ * browser can't support it
+ */
     position: fixed !important;
     position: absolute;
     top: 5px;
@@ -111,6 +166,13 @@ when pong is interactive your webpage is not.
 }
 
 #PongTable #Ball {
+/* 
+ * make ball follow
+ * scrolling and
+ * rounded unless
+ * browser can't
+ * support it
+ */
     position: fixed !important;
     position: absolute;
     top: 0;
@@ -126,6 +188,14 @@ when pong is interactive your webpage is not.
 }
 
 #PongTable #P1 {
+/* 
+ * make paddle on
+ * left follow
+ * scrolling and
+ * rounded unless
+ * browser can't
+ * support it
+ */
     margin:  0 0 0 0;
     padding: 0 0 0 0;
     position: fixed !important;
@@ -144,6 +214,14 @@ when pong is interactive your webpage is not.
 }
 
 #PongTable #P2 {
+/* 
+ * make paddle on
+ * right follow
+ * scrolling and
+ * rounded unless
+ * browser can't
+ * support it
+ */
     margin:  0 0 0 0;
     padding: 0 0 0 0;
     position: fixed !important;
