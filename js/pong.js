@@ -159,7 +159,7 @@ var Pong = function()
     YaP_Object.Settings.Player2Velocity = 10;          // ditto
     YaP_Object.Settings.AI_difficulty   = 50;          // 0 - 100 (default =  50)
     YaP_Object.Settings.AI_player       = 2;           // 0 =  off  --- 1 =  P1 is cpu  /  2 =  P2 is cpu (default =  2)
-    YaP_Object.Settings.degreeOfMotion  = 12;
+    YaP_Object.Settings.degreeOfMotion  = 2;
     YaP_Object.Settings.GyroOffset      = [0, 0];
     YaP_Object.Settings.InputMethod     = 'deviceorientation'; // default =  mousemove
     YaP_Object.Settings.DualPaddles     = false;       // default =  false
@@ -864,7 +864,7 @@ text:   (YaP_Object.Privates.InputMethodNames[value] !== undefined ? YaP_Object.
         } else {
             var $real_player = (YaP_Object.Settings.AI_player == 2) ? YaP_Object.Privates.$p1 : YaP_Object.Privates.$p2;
         }
-        
+
 	$real_player.css('top', map(
 	  constrain(
 	    (Math.abs(window.orientation) == 90)
