@@ -263,7 +263,7 @@ var Pong = function()
 
 
     if (! YaP_Object.Settings.FixBoundaryBug) {
-      for (i = 0; i <= (YaP_Object.Privates.window_height / 2)
+      for (var i = 0; i <= (YaP_Object.Privates.window_height / 2)
                     && !YaP_Object.Settings.FixBoundaryBug; i++) {
 
             YaP_Object.Privates.$ball.css('top', i + 'px');
@@ -445,7 +445,7 @@ var Pong = function()
             'margin-left': -$(this).outerWidth()  / 2 + 'px',
             'margin-top':  -$(this).outerHeight() / 2 + 'px'
         }).click(function (event) {
-            event.stopPropagation()
+            event.stopPropagation();
             if (this.id == 'About') $(this).fadeOut(1000);
         }).fadeOut(0);
     });
@@ -465,7 +465,7 @@ var Pong = function()
 
     if (typeof Storage !== 'undefined') {
         //window.console&&console.log('YaP: Reading LocalStorage[*]:');
-        for (param in YaP_Object.Settings) {
+        for (var param in YaP_Object.Settings) {
             if (localStorage[param] === undefined) {
                 //window.console&&console.log("\t\tSkipping localStorage[", param, "] == undefined");
                 continue;
@@ -669,22 +669,22 @@ var Pong = function()
         }
 
         // rather than calling these methods multiple times we set a varible to it's value to instead,and we reduce it to one call to optimize for speed
-        ball_top    = parseInt(YaP_Object.Privates.$ball.css('top'));
-        ball_bottom = parseInt(YaP_Object.Privates.$ball.css('bottom'));
-        ball_left   = parseInt(YaP_Object.Privates.$ball.css('left'));
-        ball_right  = parseInt(YaP_Object.Privates.$ball.css('right'));
+        var ball_top    = parseInt(YaP_Object.Privates.$ball.css('top'));
+        var ball_bottom = parseInt(YaP_Object.Privates.$ball.css('bottom'));
+        var ball_left   = parseInt(YaP_Object.Privates.$ball.css('left'));
+        var ball_right  = parseInt(YaP_Object.Privates.$ball.css('right'));
 
-        p1_top     = parseInt(YaP_Object.Privates.$p1.css('top'));
-        p1_bottom  = parseInt(YaP_Object.Privates.$p1.css('bottom'));
-        p1_left    = parseInt(YaP_Object.Privates.$p1.css('left'));
-        p1_width   = parseInt(YaP_Object.Privates.$p1.css('width'));
-        p1_height  = parseInt(YaP_Object.Privates.$p1.css('height'));
+        var p1_top     = parseInt(YaP_Object.Privates.$p1.css('top'));
+        var p1_bottom  = parseInt(YaP_Object.Privates.$p1.css('bottom'));
+        var p1_left    = parseInt(YaP_Object.Privates.$p1.css('left'));
+        var p1_width   = parseInt(YaP_Object.Privates.$p1.css('width'));
+        var p1_height  = parseInt(YaP_Object.Privates.$p1.css('height'));
 
-        p2_top     = parseInt(YaP_Object.Privates.$p2.css('top'));
-        p2_bottom  = parseInt(YaP_Object.Privates.$p2.css('bottom'));
-        p2_right   = parseInt(YaP_Object.Privates.$p2.css('right'));
-        p2_width   = parseInt(YaP_Object.Privates.$p2.css('width'));
-        p2_height  = parseInt(YaP_Object.Privates.$p2.css('height'));
+        var p2_top     = parseInt(YaP_Object.Privates.$p2.css('top'));
+        var p2_bottom  = parseInt(YaP_Object.Privates.$p2.css('bottom'));
+        var p2_right   = parseInt(YaP_Object.Privates.$p2.css('right'));
+        var p2_width   = parseInt(YaP_Object.Privates.$p2.css('width'));
+        var p2_height  = parseInt(YaP_Object.Privates.$p2.css('height'));
 
         //if (YaP_Object.Settings.Interactive && !YaP_Object.Settings.DualPaddles) {  // && (YaP_Object.Settings.AI_player
         if (!YaP_Object.Settings.Interactive) {
@@ -871,7 +871,7 @@ var Pong = function()
         */
 
         if ($('#PongTable #Calibrate').text() == 'Confirm') {
-            index = Math.abs(window.orientation) == 90;
+            var index = Math.abs(window.orientation) == 90;
             YaP_Object.Settings.GyroOffset[index] = index ? event.gamma : event.beta;
             return;
         }
@@ -963,11 +963,11 @@ var Pong = function()
     YaP_Object.Functions.KeyboardHandler = function (event) {
         //document.title=event.which;
         //document.title+= " " + String.fromCharCode(document.title);
-        p1_top    = parseInt(YaP_Object.Privates.$p1.css('top'));
-        p1_bottom = parseInt(YaP_Object.Privates.$p1.css('bottom'));
+        var p1_top    = parseInt(YaP_Object.Privates.$p1.css('top'));
+        var p1_bottom = parseInt(YaP_Object.Privates.$p1.css('bottom'));
 
-        p2_top    = parseInt(YaP_Object.Privates.$p2.css('top'));
-        p2_bottom = parseInt(YaP_Object.Privates.$p2.css('bottom'));
+        var p2_top    = parseInt(YaP_Object.Privates.$p2.css('top'));
+        var p2_bottom = parseInt(YaP_Object.Privates.$p2.css('bottom'));
 
         switch (event.which) {
             case 65:
