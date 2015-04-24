@@ -1,0 +1,146 @@
+@media print {
+  /**
+   * hide from printers
+   **/
+  #PongTable, #pong_btn_group, #pong_pause_toggle, #pong_interactive_toggle, #pong_menu_toggle {display: none}
+}
+
+#pong_btn_group, #pong_pause_toggle, #pong_interactive_toggle, #pong_menu_toggle {
+ /**
+  * keep above pong table and initialize in a hidden state so it doesn't show if js fails to run
+  **/
+  position: relative;
+  z-index:  999999;
+  display:  none;
+}
+
+#PongTable {
+  position: fixed !important;
+  position: absolute;
+  top:      0;
+  left:     0;
+  bottom:   0;
+  right:    0;
+  width:    100%;
+  height:   100%;
+}
+
+#PongTable a {
+  color: #070;
+}
+
+#PongTable a:hover {
+  color: #0F0;
+}
+
+#PongTable #Menu, #PongTable #About {
+  /**
+   * Make pong menu modal and follow scrolling
+   **/
+  position:   fixed !important;
+  position:   absolute;
+  z-index:    inherit;
+  left:       50%;
+  top:        50%;
+  color:      #0F0;
+  background: #000;
+}
+
+#PongTable hr {
+  border-color: #0F0;
+}
+
+#PongTable table {
+  /**
+   * Center pong menu
+   **/
+  margin-left:  auto;
+  margin-right: auto;
+  text-align:   left;
+  color:        #0F0;
+  background:   #000;
+}
+
+#PongTable select, #PongTable input {
+  width:      100px;
+  color:      #0F0;
+  background: #000;
+  /* I hate forcing the use of grey here */
+  border:     1px solid grey;
+}
+
+#PongTable input {
+  width:      50px;
+}
+
+#PongTable #P1Score, #PongTable #P2Score {
+  /**
+   * follow scrolling unless browser can't support it
+   * and make it green
+   **/
+  position: fixed !important;
+  position: absolute;
+  top:      5px;
+  color:    #0F0;
+}
+
+#PongTable #P1Score {
+  left:  20px;
+}
+
+#PongTable #P2Score {
+  right: 20px;
+}
+
+#PongTable #P1, #PongTable #P2, #PongTable #Ball {
+
+  position: fixed !important;
+  position: absolute;
+
+  margin:   0 0 0 0;
+  padding:  0 0 0 0;
+
+  width:    10px;
+  height:   100px;
+
+  top: 0;
+
+  background: #0F0;
+
+}
+
+#PongTable #Ball {
+
+  height: 10px;
+
+  border-radius:         50% !important;
+  -o-border-radius:      50% !important;
+  -moz-border-radius:    50% !important;
+  -webkit-border-radius: 50% !important;
+  -khtml-border-radius:  50% !important;
+  -ms-border-radius:     50% !important;
+}
+
+#PongTable #P1 {
+
+  left: 5px;
+
+  border-radius:         20px !important;
+  -o-border-radius:      20px !important;
+  -moz-border-radius:    20px !important;
+  -webkit-border-radius: 20px !important;
+  -khtml-border-radius:  20px !important;
+  -ms-border-radius:     20px !important;
+}
+
+#PongTable #P2 {
+
+  right: 5px;
+
+  border-radius:         20px !important;
+  -o-border-radius:      20px !important;
+  -moz-border-radius:    20px !important;
+  -webkit-border-radius: 20px !important;
+  -khtml-border-radius:  20px !important;
+  -ms-border-radius:     20px !important;
+}

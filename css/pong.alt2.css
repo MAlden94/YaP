@@ -17,118 +17,16 @@ along with YaP. If not, see <http://www.gnu.org/licenses/>.
 
 This file is part of YaP
 
+#PongTable has a low z-index and no background
+
+And your webpage is always interactive regardless of whether or not pong is interactive.
 
 This css file changes the z-index of #menu, #P1Score, #P2Score , #Ball, #P1, #P2
-	of the pong game to the very top (9999)
-
-#PongTable has no background
+ of the pong game to the very top (9999)
 
 */
+@import 'pong.common.css';
 
-@media print {
-  #PongTable, #pong_btn_group, #pong_pause_toggle,#pong_interactive_toggle, #pong_menu_toggle {display: none}
-}
-
-#pong_btn_group, #pong_pause_toggle, #pong_interactive_toggle, #pong_menu_toggle {
-    position: relative;
-    z-index: 999999;
-    display: none;
-}
-
-#PongTable #Menu, #PongTable #About {
-    z-index: 99999;
-    position: fixed !important;
-    position: absolute;
-    background-color: #000;
-    color: #0F0;
-    left: 50%;
-    top:  50%;
-}
-
-#PongTable table {
-    margin-left:  auto; 
-    margin-right: auto;
-    text-align:   center;
-    background-color: #000;
-    color: #0F0;
-}
-
-#PongTable select {
-    width: 100px;
-    background: #000;
-    color: #0F0;
-}
-
-#PongTable input {
-    width: 50px;
-    background: #000;
-    color: #0F0;
-}
-
-#PongTable #P1Score {
+#PongTable #P1Score, #P2Score, #PongTable #P1, #PongTable #P2, #PongTable #Ball {
     z-index: 9999;
-    position: fixed !important;
-    position: absolute;
-    top: 5px;
-    left: 20px;
-    color: #0F0;
-}
-
-#PongTable #P2Score {
-    z-index: 9999;
-    position: fixed !important;
-    position: absolute;
-    top: 5px;
-    right: 20px;
-    color: #0F0;
-}
-
-#PongTable #Ball {
-    z-index: 9999;
-    position: fixed !important;
-    position: absolute;
-    top: 0;
-    width: 10px;
-    height: 10px;
-    background: #0F0;
-    border-radius:         50% !important;
-    -o-border-radius:      50% !important;
-    -moz-border-radius:    50% !important;
-    -webkit-border-radius: 50% !important;
-    -khtml-border-radius:  50% !important;
-    -ms-border-radius:     50% !important;
-}
-
-#PongTable #P1 {
-    z-index: 9999;
-    position: fixed !important;
-    position: absolute;
-    top: 0;
-    left: 5px;
-    width: 10px;
-    height: 100px;
-    background: #0F0;
-    border-radius:         20px !important;
-    -o-border-radius:      20px !important;
-    -moz-border-radius:    20px !important;
-    -webkit-border-radius: 20px !important;
-    -khtml-border-radius:  20px !important;
-    -ms-border-radius:     20px !important;
-}
-
-#PongTable #P2 {
-    z-index: 9999;
-    position: fixed !important;
-    position: absolute;
-    top: 0;
-    right: 5px;
-    width: 10px;
-    height: 100px;
-    background: #0F0;
-    border-radius:         20px !important;
-    -o-border-radius:      20px !important;
-    -moz-border-radius:    20px !important;
-    -webkit-border-radius: 20px !important;
-    -khtml-border-radius:  20px !important;
-    -ms-border-radius:     20px !important;
 }
