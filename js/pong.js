@@ -239,7 +239,7 @@ var Pong = function()
         YaP_Object.Functions.Update();
     });
 
-    $('#pong_interactive_toggle').css('display', 'inline').mouseup(function () {
+    $('#pong_interactive_toggle').css('display', 'inline').mouseup(function (event) {
         YaP_Object.Settings.Interactive = !YaP_Object.Settings.Interactive;
         if (!YaP_Object.Settings.Interactive) {
             YaP_Object.Privates.Menu = true;
@@ -454,7 +454,8 @@ var Pong = function()
         e.stopPropagation();
     });
 
-    $('body').click(function () {
+    $('body').click(function (event) {
+        if ($(event.target).is('a')) return; // keep our menu open if user hit's a websites menu (might make separate css selector like "pong-keep-open"
         if (YaP_Object.Privates.Menu) {
             YaP_Object.Functions.toggleMenu();
             $('#PongTable #About').fadeOut(1000);
@@ -607,8 +608,9 @@ var Pong = function()
 
         if (YaP_Object.Privates.Menu) {
             YaP_Object.Settings.Interactive = true;
+            window.scrollTo(0, $('#pong_interactive_toggle').position().top)
         }
-
+        
         YaP_Object.Functions.Update();
         return YaP_Object.Privates.Menu
     }
