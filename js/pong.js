@@ -41,6 +41,8 @@ and if wanted you can add elements to start & stop pong:
 
   <button id="pong_pause_toggle"></button>
   <button id="pong_interactive_toggle"></button>
+  
+use "#pong_scroll_to" to make the window scroll to a menu (that contains the pong buttons), if not then window will scroll to '#pong_interactive_toggle'
 
 Notes to self:
   This code is not finished reaching 2.0
@@ -52,8 +54,8 @@ Notes to self:
   need to fix animation and fps option (done,  no need for FPS)
   need to fix AI for DualPaddles when Interactive == false, so it is single player AI
   need to clean code
-  need to adapt for phones
-  need to put settings in a array/object, so it is easy to set/ get the menu and save/load settings
+  need to adapt for phones (done) (need to add double tap to exit)
+  need to put settings in a array/object, so it is easy to set/ get the menu and save/load settings (done)
 
   (I could fix YaP_Object.Privates.ball_vx & YaP_Object.Privates.ball_vy by prefixing with init so Levels wont mess it up)
 
@@ -146,15 +148,19 @@ var Pong = function()
     YaP_Object.Privates.LatestFrameLatency = 0;
     YaP_Object.Privates.SafeFrameLatency   = 300;
     YaP_Object.Privates.title              = document.title;
+
     YaP_Object.Privates.Blinker            = null;
     YaP_Object.Privates.FrameID            = null;
     YaP_Object.Privates.AI_Error           = 0;
+
     YaP_Object.Privates.AI_Depth           = 0;
+
     YaP_Object.Privates.p1_hit             = false; // Nasty kludge to workaround
     YaP_Object.Privates.p2_hit             = false; // bug with paddle collision check (need proper fix!)
+
     YaP_Object.Privates.P1InitSize         = 100;   // updated by Jquery Method in code
     YaP_Object.Privates.P2InitSize         = 100;   // ditto
-    YaP_Object.Privates.Menu               = false; // default =  false (Shouldn't this be in Settings.*
+
     YaP_Object.Privates.ball_vy            = 5;     // velocity (also set by Level) (default =  5)
     YaP_Object.Privates.ball_vx            = 5;     // ditto
 
@@ -162,18 +168,28 @@ var Pong = function()
     YaP_Object.Settings.Level                     = 5;           // Level (default =  5)
     YaP_Object.Settings.Player1Velocity           = 10;          // velocity for keyboard (default =  10)
     YaP_Object.Settings.Player2Velocity           = 10;          // ditto
+
     YaP_Object.Settings.AI_difficulty             = 50;          // 0 - 100 (default =  50)
     YaP_Object.Settings.AI_player                 = 2;           // 0 =  off  --- 1 =  P1 is cpu  /  2 =  P2 is cpu (default =  2)
+
     YaP_Object.Settings.degreeOfMotion            = 2;
-    YaP_Object.Settings.GyroOffset                = [0, 0];
-    YaP_Object.Settings.InputMethod               = 'deviceorientation'; // default =  mousemove
+    YaP_Object.Settings.GyroOffset                = [0, 0]; // bugged in certain orientations
+
+    YaP_Object.Settings.InputMethod               = 'deviceorientation'; // leave this as is (for mobile support)
     YaP_Object.Settings.DualPaddles               = false;       // default =  false
-    YaP_Object.Settings.AutoLevelUp               = true;        // default =  false
+
+    YaP_Object.Settings.AutoLevelUp               = true;        // default =  true
+    
     YaP_Object.Settings.Interactive               = false;       // default =  false
+    YaP_Object.Settings.Menu                      = false;       // default =  false
     YaP_Object.Settings.Paused                    = false;       // default =  false
-    YaP_Object.Settings.LevelChangesPaddleSize    = true;
-    YaP_Object.Settings.link_velocity_of_players  = true;
-    YaP_Object.Settings.FixBoundaryBug            = false; // default =  false
+    
+    YaP_Object.Settings.MenuOnInteractiveReturn   = false;       // default =  false
+
+    YaP_Object.Settings.LevelChangesPaddleSize    = true;        // default =  true
+    YaP_Object.Settings.link_velocity_of_players  = true;        // default =  true
+
+    YaP_Object.Settings.FixBoundaryBug            = false;       // default =  false
 
     YaP_Object.Functions = new Object();
 
@@ -234,7 +250,7 @@ var Pong = function()
         $(window).off('focus', YaP_Object.Functions.focus);
         if (!YaP_Object.Settings.Paused) {
             $(window).on('focus', YaP_Object.Functions.focus);
-            YaP_Object.Privates.Menu = false;
+            YaP_Object.Settings.Menu = false;
         }
         YaP_Object.Functions.Update();
     });
@@ -242,19 +258,19 @@ var Pong = function()
     $('#pong_interactive_toggle').css('display', 'inline').mouseup(function (event) {
         YaP_Object.Settings.Interactive = !YaP_Object.Settings.Interactive;
         if (!YaP_Object.Settings.Interactive) {
-            YaP_Object.Privates.Menu = true;
+            YaP_Object.Settings.Menu = true;
         }
         YaP_Object.Functions.toggleMenu()
     });
 
     YaP_Object.Functions.blur = function () {
-        if (YaP_Object.Privates.Menu) return;
+        if (YaP_Object.Settings.Menu) return;
         YaP_Object.Settings.Paused = true;
         YaP_Object.Functions.Update();
         $(window).off('blur', YaP_Object.Functions.blur);
     };
     YaP_Object.Functions.focus = function () {
-        if (YaP_Object.Privates.Menu) return;
+        if (YaP_Object.Settings.Menu) return;
         YaP_Object.Settings.Paused = false;
         YaP_Object.Functions.Update();
         $(window).on('blur', YaP_Object.Functions.blur);
@@ -406,7 +422,7 @@ var Pong = function()
         switch (this.id) {
             case '_Paused':
                 if (this.checked) {
-                    YaP_Object.Privates.Menu = false;
+                    YaP_Object.Settings.Menu = false;
                     YaP_Object.Functions.Update();
                 }
                 return;
@@ -456,7 +472,7 @@ var Pong = function()
 
     $('body').click(function (event) {
         if ($(event.target).is('a')) return; // keep our menu open if user hit's a websites menu (might make separate css selector like "pong-keep-open"
-        if (YaP_Object.Privates.Menu) {
+        if (YaP_Object.Settings.Menu) {
             YaP_Object.Functions.toggleMenu();
             $('#PongTable #About').fadeOut(1000);
         }
@@ -495,7 +511,7 @@ var Pong = function()
     * @return void
     **/
     YaP_Object.Functions.Update = function() {
-        if (YaP_Object.Privates.Menu) {
+        if (YaP_Object.Settings.Menu) {
             if (!YaP_Object.Privates.Blinker) {
                 YaP_Object.Privates.Blinker = setInterval(function () {
                     $('#PongTable #blink').fadeToggle(500)
@@ -525,11 +541,14 @@ var Pong = function()
 
         YaP_Object.Functions.UpdateLevel(2);
 
-        $('#pong_menu_toggle').text((YaP_Object.Privates.Menu               ? 'close' : 'open') + ' pong menu');
+        $('#pong_menu_toggle').text((YaP_Object.Settings.Menu               ? 'close' : 'open') + ' pong menu');
         $('#pong_pause_toggle').text((YaP_Object.Settings.Paused            ? 'play' : 'pause') + ' pong');
         $('#pong_interactive_toggle').text((YaP_Object.Settings.Interactive ? 'quit' : 'start') + ' pong');
 
         if (YaP_Object.Settings.Interactive) {
+            if (YaP_Object.Settings.MenuOnInteractiveReturn){
+                YaP_Object.Settings.Menu = true;
+            }
             if(!$('#PongTable').hasClass('interactive')) {
                 $('#PongTable').addClass('interactive');
             }
@@ -604,15 +623,21 @@ var Pong = function()
     **/
     YaP_Object.Functions.toggleMenu = function () {
         // if Menu is false then Menu and pause are set true
-        YaP_Object.Settings.Paused = (YaP_Object.Privates.Menu = !YaP_Object.Privates.Menu);
+        YaP_Object.Settings.Paused = (YaP_Object.Settings.Menu = !YaP_Object.Settings.Menu);
 
-        if (YaP_Object.Privates.Menu) {
+        if (YaP_Object.Settings.Menu) {
             YaP_Object.Settings.Interactive = true;
-            window.scrollTo(0, $('#pong_interactive_toggle').position().top)
+
+            if ($('#pong_scroll_to').length){
+                window.scrollTo(0, $('#pong_scroll_to').position().top)
+            }
+            else {
+                window.scrollTo(0, $('#pong_interactive_toggle').position().top)
+            }
         }
         
         YaP_Object.Functions.Update();
-        return YaP_Object.Privates.Menu
+        return YaP_Object.Settings.Menu
     }
 
    /**

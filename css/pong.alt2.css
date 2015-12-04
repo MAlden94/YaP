@@ -27,6 +27,6 @@ This css file changes the z-index of #menu, #P1Score, #P2Score , #Ball, #P1, #P2
 */
 @import 'pong.common.css';
 
-#PongTable #P1Score, #P2Score, #PongTable #P1, #PongTable #P2, #PongTable #Ball {
+#PongTable #P1Score, #PongTable #P2Score, #PongTable #P1, #PongTable #P2, #PongTable #Ball {
     z-index: 9999;
 }
