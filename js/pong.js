@@ -265,6 +265,11 @@ var Pong = function()
         YaP_Object.Functions.toggleMenu()
     });
 
+   /**
+    * @brief This is so we don't waste resources when tab or window isn't active
+    * @notes
+    * @return void
+    **/
     YaP_Object.Functions.blur = function () {
         if (YaP_Object.Settings.Menu) return;
         YaP_Object.Settings.Paused = true;
@@ -372,7 +377,13 @@ var Pong = function()
         <td><a id="ResetSettings" href="#">Default settings</a></td>\
         </tr>\
         </table>\
-        +/-: Level | A/Z: P1 | J/M: P2 | <a id="Info" href="#">Info</a><br>\
+        <table>\
+        <tr>\
+        <td></td>\
+        <td>+/-: Level | A/Z: P1 | J/M: P2 | <a id="Info" href="#">Info</a></td>\
+        <td></td>\
+        </tr>\
+        </table>\
         </div><div id="About">Copyright (C) 2012-2016 Mitchell Lafferty &lt;<a href="http://linuxrules94.users.sf.net/">http://linuxrules94.users.sf.net/</a>&gt; <coolspeedy6 at gmail dot com><br>\
         Released under the GNU GPL.<br>\
         Please read the source code for more info. (pong.js)<br>\
@@ -463,7 +474,7 @@ var Pong = function()
                 location.reload();
                 return;
             case 'Info':
-                $('#About').fadeToggle(1000);
+                $('#About').slideToggle(1000);
                 return;
         }
     });
@@ -529,11 +540,6 @@ var Pong = function()
     **/
     YaP_Object.Functions.Update = function() {
         if (YaP_Object.Settings.Menu) {
-            if (!YaP_Object.Privates.Blinker) {
-                YaP_Object.Privates.Blinker = setInterval(function () {
-                    $('#PongTable #blink').fadeToggle(500)
-                }, 500);
-            }
             $('#PongTable #_Level').val(YaP_Object.Settings.Level);
             $('#PongTable #_Player1Velocity').val(YaP_Object.Settings.Player1Velocity);
             $('#PongTable #_Player2Velocity').val(YaP_Object.Settings.Player2Velocity);
@@ -548,7 +554,13 @@ var Pong = function()
             $('#PongTable #_AI_player').attr('disabled', YaP_Object.Settings.DualPaddles);
             $('#PongTable #_link_velocity_of_players').attr('checked',  YaP_Object.Settings.link_velocity_of_players);
 
-            $('#PongTable #Menu').fadeIn(1000);
+            $('#PongTable #Menu').slideDown(1000);
+
+            if (!YaP_Object.Privates.Blinker) {
+                YaP_Object.Privates.Blinker = setInterval(function () {
+                    $('#PongTable #blink').fadeToggle(500)
+                }, 500);
+            }
         }
         else {
             clearInterval(YaP_Object.Privates.Blinker);

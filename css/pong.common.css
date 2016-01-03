@@ -107,7 +107,8 @@ You shouldn't need to import this
 }
 
 #PongTable input {
-  width: 3em;
+  height: 1.2em;
+  width:  3em;
 }
 
 #PongTable #P1Score, #PongTable #P2Score {
