@@ -486,7 +486,7 @@ var Pong = function()
     $('body').click(function (event) {
         // keep our menu open if user hit's a websites menu
         //   (might make separate css selector like "pong-keep-open")
-        if ($(event.target).is('a')) return;
+        if ($(event.target).is('a') || $(event.target).is('button')) return;
         if (YaP_Object.Settings.Menu) {
             YaP_Object.Functions.toggleMenu();
             $('#PongTable #About').fadeOut(1000);
@@ -956,7 +956,7 @@ var Pong = function()
     * @return true
     **/
     YaP_Object.Functions.TouchHandler = function (event) {
-        event.preventDefault();
+        //event.preventDefault(); //considered harmful: breaks pong menu
         // half of screen allocated to P1, other half P2
         var $real_player = null;
         if  (YaP_Object.Settings.DualPaddles) {
