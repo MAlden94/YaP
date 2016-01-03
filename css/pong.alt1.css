@@ -17,14 +17,14 @@ along with YaP. If not, see <http://www.gnu.org/licenses/>.
 
 This file is part of YaP
 
+When YaP is interactive:
+    #PongTable has no background.
+    #PongTable and it's children z-index are above the webpage.
+    User webpage is not interactive.
 
-#PongTable has no background.
-
-When pong is interactive your webpage is not.
-
-This css file changes the z-index of
- #pong_table, #menu, #P1Score, #P2Score , #Ball, #P1, #P2
-of the pong game to the very top (9999) when interactive is selected.
+When YaP is not interactive:
+    #PongTable and it's children z-index are below the webpage.
+    User webpage is interactive.
 */
 
 /**

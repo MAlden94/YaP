@@ -38,13 +38,13 @@ $(function(){
 </script>
 
 
-in order to allow the user to exit/pause game put these elements in the body somewhere accessible
+In order to allow the user to exit/pause game put these elements in the body somewhere accessible
 
   <button id="pong_pause_toggle"></button>
   <button id="pong_interactive_toggle"></button>
   
-and use the id "#pong_scroll_to" to make the window scroll to a menu (that contains the pong buttons),
- if not then window will scroll to '#pong_interactive_toggle'
+  and use the id "#pong_scroll_to" to make the window scroll to a menu (that contains the pong buttons),
+    if not then window will scroll to '#pong_interactive_toggle'
    
 "#pong_btn_group" will hide elements unless pong is playable.
 

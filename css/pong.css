@@ -24,6 +24,16 @@ when pong is interactive your webpage is not.
 This css file changes the z-index of #pong_table, #Menu, #P1Score, #P2Score , #Ball, #P1, #P2
  of the pong game to the very top (9999)
  when interactive is selected.
+ 
+ When YaP is interactive:
+    #PongTable has a semi-opaque background in browsers that support it, black in others.
+    #PongTable and it's children z-index are above the webpage.
+    User webpage is not interactive.
+
+When YaP is not interactive:
+    #PongTable has no background.
+    #PongTable and it's children z-index are below the webpage.
+    User webpage is interactive.
 */
 
 /**

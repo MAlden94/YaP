@@ -18,12 +18,13 @@ along with YaP. If not, see <http://www.gnu.org/licenses/>.
 This file is part of YaP.
 
 
-#PongTable has a low z-index and no background.
+When YaP is interactive:
+    #PongTable has no background.
+    #PongTable z-index is below webpage, and it's children are above the webpage.
+    User webpage is always interactive.
 
-And your webpage is always interactive regardless of whether or not pong is interactive.
-
-This css file changes the z-index of #menu, #P1Score, #P2Score , #Ball, #P1, #P2
- of the pong game to the very top (9999)
+When YaP is not interactive:
+    no change
 */
 
 /**
