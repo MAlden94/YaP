@@ -1,3 +1,35 @@
+/*
+Copyright (C) 2012-2016 Mitchell Lafferty <coolspeedy6 at gmail dot com>
+Released under the GNU GPL.
+
+YaP (Yet another Pong) is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+YaP is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with YaP. If not, see <http://www.gnu.org/licenses/>.
+
+This file is part of YaP.
+
+
+This is the core css file of YaP.
+You shouldn't need to import this
+ the included themes will.
+*/
+
+/**
+ * 
+ * /// No user serviceable parts below!
+ * /// Please use separate css files for user defined themes.
+ * 
+ **/
+
 @media print {
   /**
    * hide from printers
@@ -7,7 +39,8 @@
 
 #pong_btn_group, #pong_pause_toggle, #pong_interactive_toggle, #pong_menu_toggle {
  /**
-  * keep above pong table and initialize in a hidden state so it doesn't show if js fails to run
+  * keep buttons above pong table and initialize in a
+  * hidden state so it doesn't show if pong fails to run
   **/
   position: relative;
   z-index:  999999;
@@ -61,8 +94,12 @@
   background:   #000;
 }
 
+#PongTable button {
+   width: 5em;
+}
+
 #PongTable select, #PongTable input {
-  width:      100px;
+  width:      8em;
   color:      #0F0;
   background: #000;
   /* I hate forcing the use of grey here */
@@ -70,7 +107,7 @@
 }
 
 #PongTable input {
-  width:      50px;
+  width: 3em;
 }
 
 #PongTable #P1Score, #PongTable #P2Score {
@@ -80,7 +117,7 @@
    **/
   position: fixed !important;
   position: absolute;
-  top:      5px;
+  top:      0.3em;
   color:    #0F0;
 }
 
@@ -106,6 +143,13 @@
   top: 0;
 
   background: #0F0;
+  
+  border-radius:         20px !important;
+  -o-border-radius:      20px !important;
+  -moz-border-radius:    20px !important;
+  -webkit-border-radius: 20px !important;
+  -khtml-border-radius:  20px !important;
+  -ms-border-radius:     20px !important;
 
 }
 
@@ -125,22 +169,10 @@
 
   left: 5px;
 
-  border-radius:         20px !important;
-  -o-border-radius:      20px !important;
-  -moz-border-radius:    20px !important;
-  -webkit-border-radius: 20px !important;
-  -khtml-border-radius:  20px !important;
-  -ms-border-radius:     20px !important;
 }
 
 #PongTable #P2 {
 
   right: 5px;
 
-  border-radius:         20px !important;
-  -o-border-radius:      20px !important;
-  -moz-border-radius:    20px !important;
-  -webkit-border-radius: 20px !important;
-  -khtml-border-radius:  20px !important;
-  -ms-border-radius:     20px !important;
 }

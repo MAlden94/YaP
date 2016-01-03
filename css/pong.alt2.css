@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2012-2015 Mitchell Lafferty <coolspeedy6 at gmail dot com>
+Copyright (C) 2012-2016 Mitchell Lafferty <coolspeedy6 at gmail dot com>
 Released under the GNU GPL.
 
 YaP (Yet another Pong) is free software: you can redistribute it and/or modify
@@ -15,16 +15,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with YaP. If not, see <http://www.gnu.org/licenses/>.
 
-This file is part of YaP
+This file is part of YaP.
 
-#PongTable has a low z-index and no background
+
+#PongTable has a low z-index and no background.
 
 And your webpage is always interactive regardless of whether or not pong is interactive.
 
 This css file changes the z-index of #menu, #P1Score, #P2Score , #Ball, #P1, #P2
  of the pong game to the very top (9999)
-
 */
+
+/**
+ * 
+ * /// No user serviceable parts below!
+ * /// Please use separate css files for user defined themes.
+ * 
+ **/
+
 @import 'pong.common.css';
 
 #PongTable #P1Score, #PongTable #P2Score, #PongTable #P1, #PongTable #P2, #PongTable #Ball {

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2012-2015 Mitchell Lafferty <coolspeedy6 at gmail dot com>
+Copyright (C) 2012-2016 Mitchell Lafferty <coolspeedy6 at gmail dot com>
 Released under the GNU GPL.
 
 YaP (Yet another Pong) is free software: you can redistribute it and/or modify
@@ -23,46 +23,45 @@ For any questions please email me.
 
 What's included: pong.js, pong.css, pong.alt*.css (get the files here or email me: http://linuxrules94.users.sf.net/)
 
-Add the following to head and replace path/to/pong.css with the path of one of 3 css files included:
 
-<link href="http://rawgit.com/linuxrules94/YaP/master/css/pong.css" type="text/css" rel="stylesheet">
+Make sure you set your DOCTYPE to <!DOCTYPE html>
+Add the following inside <head></head> and replace css/pong.css with the path of one of 3 css files included (pong.css [recommended], or pong.alt*.css):
+
+<link href="css/pong.css" type="text/css" rel="stylesheet">
 <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="http://rawgit.com/linuxrules94/YaP/master/js/pong.js"></script>
+<script src="js/jquery.finger.js"></script>
+<script src="js/pong.js"></script>
 <script>
 $(function(){
     Pong()
 });
 </script>
 
-<!DOCTYPE html>
 
-
-and if wanted you can add elements to start & stop pong:
+in order to allow the user to exit/pause game put these elements in the body somewhere accessible
 
   <button id="pong_pause_toggle"></button>
   <button id="pong_interactive_toggle"></button>
   
-use "#pong_scroll_to" to make the window scroll to a menu (that contains the pong buttons), if not then window will scroll to '#pong_interactive_toggle'
+and use the id "#pong_scroll_to" to make the window scroll to a menu (that contains the pong buttons),
+ if not then window will scroll to '#pong_interactive_toggle'
+   
+"#pong_btn_group" will hide elements unless pong is playable.
 
 Notes to self:
-  This code is not finished reaching 2.0
-  need to put code in git/bzr branch
-  need to allow user to change ball & paddle sizes
-    (Level will adjust it now, but  we might want a initial size, or have a option to adjust individual things)
+     need to allow user to change ball & paddle sizes, and vx/y, and keybinds
+      (Level will adjust it now, but  we might want a initial size, or have a option to adjust individual things)
 
-  need to fix speedup function / Level (done)
-  need to fix animation and fps option (done,  no need for FPS)
-  need to fix AI for DualPaddles when Interactive == false, so it is single player AI
-  need to clean code
-  need to adapt for phones (done) (need to add double tap to exit)
-  need to put settings in a array/object, so it is easy to set/ get the menu and save/load settings (done)
+    need to fix AI for DualPaddles when Interactive == false, so it is single player AI
+    need to adapt for phones (done) (need to add double tap to exit)
 
-  (I could fix YaP_Object.Privates.ball_vx & YaP_Object.Privates.ball_vy by prefixing with init so Levels wont mess it up)
+    (I could fix YaP_Object.Privates.ball_vx & YaP_Object.Privates.ball_vy by prefixing with init so Levels won't mess it up)
 
-  need to make this program use true JS OO correctly
-
-  need to add WebSocket support
-   and multiplayer pvp or remote ctrl option
+     need to add WebSocket support
+      and multiplayer pvp or remote ctrl option
+     need to have a mobile gesture for pong menu and exit from interactive
+     maybe make pong menu stay open if no "#pong_scroll_to" or "#pong_interactive_toggle"
+      is found and pong is interactive and page has reloaded or user has returned
 */
 
 /// No user serviceable parts below!
@@ -70,9 +69,8 @@ Notes to self:
 if (typeof jQuery === 'undefined')
 {
     // load jquery if user forgot to load it
-    //window.console&&console.log("YaP: You fogot to load jQuery, Attempting to fallback to jQuery 2.1.1!");
+    //console.warn('YaP: You forgot to load jQuery, Attempting to inject and fallback to jQuery 2.1.1!');
     document.write('<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>');
-    //document.write('<script src="/usr/share/javascript/jquery/jquery-migrate-1.2.1.min.js"></script>');
 }
 
 // homemade jquery plugin to catch double keypress
@@ -87,9 +85,10 @@ if (typeof jQuery === 'undefined')
         return this.each(function () {
             $(this).keypress(function (event) {
                 var newKeyCode = event.which;
+		////console.log(String.fromCharCode((96 <= newKeyCode && newKeyCode <= 105)? newKeyCode-48 : newKeyCode));
                 if (newKeyCode == lastKeyCode) {
                     var newKeyTime = Date.now();
-                    //console.log(newKeyTime, ' - ', lastKeyTime, ' = ', newKeyTime - lastKeyTime, ' <= ', deltaTime)
+                    ////console.log(newKeyTime, ' - ', lastKeyTime, ' = ', newKeyTime - lastKeyTime, ' <= ', deltaTime)
                     if (newKeyTime - lastKeyTime <= deltaTime) {
                         lastKeyCode = null;
                         newKeyTime  = 0;
@@ -111,12 +110,11 @@ if (typeof jQuery === 'undefined')
  **/
 var Pong = function()
 {
-
+    //console.group('YaP: ');
     Pong = function() {
-        //window.console&&console.log("YaP: Pong already initalized!")
+        //console.warn('Pong already initalized! Returning YaP object')
         return YaP_Object
     }
-    
     
     window.requestAnimationFrame = window.requestAnimationFrame       ||
                                    window.webkitRequestAnimationFrame ||
@@ -240,7 +238,11 @@ var Pong = function()
     });
 
     $("#PongTable").dblclick(function () {
+        // allows user to exit interaction by double clicking.
+        // note: need mobile equiv
         if (YaP_Object.Settings.Interactive) $('#pong_interactive_toggle').mouseup();
+    }).on('doubletap',function() {
+        $("#PongTable").dblclick();
     });
 
     $('#pong_btn_group').css('display', 'inline');
@@ -292,15 +294,23 @@ var Pong = function()
         }
     }
 
-    //window.console&&console.log("YaP: YaP_Object.Settings.FixBoundaryBug ==", YaP_Object.Settings.FixBoundaryBug);
+    if (YaP_Object.Settings.FixBoundaryBug){
+      //console.info('Boundary bug detected!')
+    }
 
     YaP_Object.Privates.$ball.css('left', YaP_Object.Privates.window_width  / 2 + 'px');
     YaP_Object.Privates.$ball.css('top',  YaP_Object.Privates.window_height / 2 + 'px');
 
     /// Menu start
-    // I fucking hate using tables
+    // I fsck hate using tables
     $('#PongTable').append('<div id="Menu">\
-        <span id="blink" style="display: inline; text-align: center">Click outside the menu to close.</span><br>\
+        <table>\
+           <tr>\
+               <td></td>\
+               <td><span id="blink" style="display: inline; text-align: center">Click outside the menu to close.</span></td>\
+               <td></td>\
+           </tr>\
+        </table>\
         <table>\
            <tr>\
                <td>Level </td>\
@@ -352,16 +362,18 @@ var Pong = function()
         <input id="_AutoLevelUp" type="checkbox">Automatically Level up<br>\
         <input id="_Interactive" type="checkbox">Interactive<br>\
         <input id="_Paused"      type="checkbox">Paused<br>\
-        <span style="display: inline; text-align: center">\
-        <a id="ResetScores"   href="#">Reset scores</a>&nbsp;\
-        <a id="ResetSettings" href="#">Default settings</a>\
-        </span><br>\
-        +/-: Level | A/Z: P1 | J/M: P2 | <a id="Info" href="#">Info</a><br>\
         </td>\
         <td></td>\
         </tr>\
         </table>\
-        </div><div id="About">Copyright (C) 2012-2015 Mitchell Lafferty &lt;<a href="http://linuxrules94.users.sf.net/">http://linuxrules94.users.sf.net/</a>&gt; <coolspeedy6 at gmail dot com><br>\
+        <table>\
+        <td><a id="ResetScores"   href="#">Reset scores</a></td>\
+        <td></td>\
+        <td><a id="ResetSettings" href="#">Default settings</a></td>\
+        </tr>\
+        </table>\
+        +/-: Level | A/Z: P1 | J/M: P2 | <a id="Info" href="#">Info</a><br>\
+        </div><div id="About">Copyright (C) 2012-2016 Mitchell Lafferty &lt;<a href="http://linuxrules94.users.sf.net/">http://linuxrules94.users.sf.net/</a>&gt; <coolspeedy6 at gmail dot com><br>\
         Released under the GNU GPL.<br>\
         Please read the source code for more info. (pong.js)<br>\
         <a id="MyBitcoin" href="bitcoin:16tpxvjpPKhMUGhZkRU9s9UhuKZMuFBVfz?label=Donations%20Address%20for%20linuxrules94"><em>Bitcoin donations :)</em></a></div>');
@@ -436,7 +448,7 @@ var Pong = function()
         event.preventDefault();
         switch (this.id) {
             case 'Calibrate':
-                if($('#PongTable #Calibrate').text() == 'Confirm') {
+                if($('#PongTable #Calibrate').text().indexOf('Confirm') != -1) {
                     $('#PongTable #Calibrate').text('Calibrate');
                 }
                 else {
@@ -467,11 +479,14 @@ var Pong = function()
     });
 
     $('#PongTable #Menu').dblclick(function (e) {
+        // don't close menu if user double clicks it
         e.stopPropagation();
     });
 
     $('body').click(function (event) {
-        if ($(event.target).is('a')) return; // keep our menu open if user hit's a websites menu (might make separate css selector like "pong-keep-open"
+        // keep our menu open if user hit's a websites menu
+        //   (might make separate css selector like "pong-keep-open")
+        if ($(event.target).is('a')) return;
         if (YaP_Object.Settings.Menu) {
             YaP_Object.Functions.toggleMenu();
             $('#PongTable #About').fadeOut(1000);
@@ -481,21 +496,23 @@ var Pong = function()
     /// Menu end
 
     if (typeof Storage !== 'undefined') {
-        //window.console&&console.log('YaP: Reading LocalStorage[*]:');
+        //console.group('Reading LocalStorage[*]:');
         for (param in YaP_Object.Settings) {
             if (localStorage[param] === undefined) {
-                //window.console&&console.log("\t\tSkipping localStorage[", param, "] == undefined");
+                //console.debug("\t\tSkipping localStorage[", param, "] == undefined");
                 continue;
             }
-            //window.console&&console.log("\t\t(YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param],") = (localStorage[", param, "], ", localStorage[param], ')');
+            //console.debug("\t\t(YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param],") = (localStorage[", param, "], ", localStorage[param], ')');
             try {
                 YaP_Object.Settings[param] = JSON.parse(localStorage[param]);
             }
             catch (e) {
-                //window.console&&console.log("\t\tSkipping: localStorage[", param, "]: Error:",e);
+                //console.warn("\t\tSkipping: localStorage[", param, "]: Error:",e);
             }
         }
+        //console.groupEnd();
     }
+
     //this is encapulated in a function because $(document).keypress(...GlobalKeyboardHandler); does not work
     $(document).keypress(function (event) {
         YaP_Object.Functions.GlobalKeyboardHandler(event)
@@ -569,12 +586,12 @@ var Pong = function()
         }
 
         if (jQuery.inArray(YaP_Object.Settings.InputMethod, YaP_Object.Privates.InputMethods) == -1) {
-            //window.console&&console.log('YaP: InputMethod:', YaP_Object.Settings.InputMethod, ': not found using: ', YaP_Object.Privates.InputMethods[0], ' input instead');
+            //console.warn('InputMethod:', YaP_Object.Settings.InputMethod, ': not found using: ', YaP_Object.Privates.InputMethods[0], ' input instead');
             YaP_Object.Settings.InputMethod = YaP_Object.Privates.InputMethods[0];
         }
 
         if (YaP_Object.Settings.Interactive) {
-            //window.console&&console.log('YaP: InputMethod selected:', YaP_Object.Settings.InputMethod);
+            //console.info('InputMethod selected:', YaP_Object.Settings.InputMethod);
             YaP_Object.Privates.OldInputMethod = YaP_Object.Settings.InputMethod;
             switch (YaP_Object.Privates.OldInputMethod) {
                 case 'deviceorientation':
@@ -603,16 +620,17 @@ var Pong = function()
         }
 
         if (typeof Storage !== 'undefined') {
-            //window.console&&console.log('YaP: Writing LocalStorage[*]:');
+            //console.group('Writing LocalStorage[*]:');
             for (param in YaP_Object.Settings) {
-                //window.console&&console.log("\t\t(localStorage[", param, "], ", localStorage[param],") = (YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param], ')');
+                //console.debug("\t\t(localStorage[", param, "], ", localStorage[param],") = (YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param], ')');
                 try {
                     localStorage[param] = JSON.stringify(YaP_Object.Settings[param]);
                 }
                 catch (e) {
-                    //window.console&&console.log("\t\tSkipping: YaP_Object.Settings[", param, "]: Error:", e);
+                    //console.warn("\t\tSkipping: YaP_Object.Settings[", param, "]: Error:", e);
                 }
             }
+            //console.groupEnd();
         }
     }
 
@@ -655,7 +673,7 @@ var Pong = function()
                 YaP_Object.Settings.Level--;
                 break;
             default:
-                //window.console&&console.log("updating level only")
+                //console.info('Updating level only')
         }
 
         YaP_Object.Settings.Level = constrain(YaP_Object.Settings.Level, 1, 100);
@@ -684,11 +702,14 @@ var Pong = function()
     * @return void
     **/
     YaP_Object.Functions._newframe = function () {
-        var start = (new Date()).getMilliseconds();
+      
         if (!YaP_Object.Settings.Paused) {
             window.requestAnimationFrame(YaP_Object.Functions._newframe);
         }
-        if (YaP_Object.Settings.FixBoundaryBug) {
+
+        var start = (new Date()).getMilliseconds();
+
+	if (YaP_Object.Settings.FixBoundaryBug) {
             YaP_Object.Privates.$p1.css('bottom',   (YaP_Object.Privates.window_height - parseInt(YaP_Object.Privates.$p1.css('top')   )) - parseInt(YaP_Object.Privates.$p1.css('height')  ) + 'px');
             YaP_Object.Privates.$p2.css('bottom',   (YaP_Object.Privates.window_height - parseInt(YaP_Object.Privates.$p2.css('top')   )) - parseInt(YaP_Object.Privates.$p2.css('height')  ) + 'px');
             YaP_Object.Privates.$ball.css('bottom', (YaP_Object.Privates.window_height - parseInt(YaP_Object.Privates.$ball.css('top') )) - parseInt(YaP_Object.Privates.$ball.css('height')) + 'px');
@@ -821,19 +842,20 @@ var Pong = function()
             'top':  ball_top  + 'px',
             'left': ball_left + 'px',
         });
-        ////window.console&&console.log((new Date()).getMilliseconds() - start);
+        //document.title = performance.now() - step;
         if ((YaP_Object.Privates.LatestFrameLatency = (new Date()).getMilliseconds() - start) > YaP_Object.Privates.SafeFrameLatency) {
             if (YaP_Object.Settings.Interactive) {
                 YaP_Object.Settings.Interactive = false;
                 alert("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
             }
             else {
-                console.log("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
+                //console.warn("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
             }
             $('#pong_pause_toggle').mouseup(); // ughhhhh
             //YaP_Object.Settings.Paused = true;
             //YaP_Object.Functions.Update();
         }
+
     }
 
    /**
@@ -878,7 +900,7 @@ var Pong = function()
     **/
     YaP_Object.Functions.deviceorientationHandler = function (event) {
         if (event.gamma == null || event.beta == null) {
-            window.console&&console.log('YaP: Unsupported event detected: InputMethod reset to mousemove');
+            //console.warn('Unsupported event detected: InputMethod has been reset to mousemove');
             $('#PongTable #_InputMethod option[value="deviceorientation"]').remove();
             YaP_Object.Settings.InputMethod = 'mousemove';
             YaP_Object.Functions.Update();
@@ -886,20 +908,22 @@ var Pong = function()
         }
 
         /*
-            if (window.location.hash == "#DEBUG"){
+            if (window.location.hash == "#PONG-DEBUG"){
                 YaP_Object.Privates.gamma = (YaP_Object.Privates.gamma + event.gamma) / 2;
                 YaP_Object.Privates.beta  = (YaP_Object.Privates.beta  + event.beta)  / 2;
-                console.log(event);
-                console.log(YaP_Object.Privates.gamma);
+                //console.log(event);
+                //console.log(YaP_Object.Privates.gamma);
             } else {
                 YaP_Object.Privates.gamma = event.gamma;
                 YaP_Object.Privates.beta  = event.beta;
             }
         */
 
-        if ($('#PongTable #Calibrate').text() == 'Confirm') {
-            index = Math.abs(window.orientation) == 90;
+        if ($('#PongTable #Calibrate').text().indexOf('Confirm') != -1) {
+            index = (Math.abs(window.orientation) == 90) + 0; // type conversion
             YaP_Object.Settings.GyroOffset[index] = index ? event.gamma : event.beta;
+	    $('#PongTable #Calibrate').text("Confirm [" + " " + pad(parseInt(YaP_Object.Settings.GyroOffset[index]), 4) + ']');
+	    //console.log(index, YaP_Object.Settings.GyroOffset[index]);
             return;
         }
 
@@ -988,8 +1012,7 @@ var Pong = function()
     * @return true
     **/
     YaP_Object.Functions.KeyboardHandler = function (event) {
-        //document.title=event.which;
-        //document.title+= " " + String.fromCharCode(document.title);
+
         p1_top    = parseInt(YaP_Object.Privates.$p1.css('top'));
         p1_bottom = parseInt(YaP_Object.Privates.$p1.css('bottom'));
 
@@ -1043,7 +1066,6 @@ var Pong = function()
 
     YaP_Object.Functions.GlobalKeyboardHandler = function (event) {
         if (!YaP_Object.Settings.Interactive) return;
-        //document.title = event.which;
         switch (event.which) {
             case 43:
             case 61:
@@ -1091,8 +1113,19 @@ var Pong = function()
     function map(value, inMin, inMax, outMin, outMax) {
         return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
+   /**
+    * @brief left pads strings
+    * @notes min is the min length required
+    * @return string
+    **/
+    function pad(str, min) {
+        str = str.toString();
+        return str.length < min ? pad(' ' + str, min) : str;
+    }
 
     YaP_Object.Functions.Update();
+    
+    //console.groupEnd();
     return YaP_Object
 
 }
