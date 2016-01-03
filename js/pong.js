@@ -490,10 +490,13 @@ var Pong = function()
 	}).fadeOut(0);
     });
 
-    $('#PongTable #Menu').dblclick(function (e) {
+    $('#PongTable #Menu').dblclick(function (event) {
 	// don't close menu if user double clicks it
-	e.stopPropagation();
+	event.stopPropagation();
+    }).on('doubletap',function (event) {
+	event.stopPropagation();
     });
+
 
     $('body').click(function (event) {
 	// keep our menu open if user hit's a websites menu
