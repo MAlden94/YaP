@@ -94,16 +94,20 @@ You shouldn't need to import this
   background:   #000;
 }
 
-#PongTable button {
-   width: 5em;
-}
-
-#PongTable select, #PongTable input {
+#PongTable select, #PongTable input, button {
   width:      8em;
   color:      #0F0;
   background: #000;
   /* I hate forcing the use of grey here */
   border:     1px solid grey;
+}
+
+#PongTable button {
+   width:      5em;
+}
+
+#PongTable select:disabled, #PongTable input:disabled {
+  color:      #070;
 }
 
 #PongTable input {
