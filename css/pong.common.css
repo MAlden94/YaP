@@ -94,7 +94,7 @@ You shouldn't need to import this
   background:   #000;
 }
 
-#PongTable select, #PongTable input, button {
+#PongTable select, #PongTable input, #PongTable button {
   width:      8em;
   color:      #0F0;
   background: #000;
