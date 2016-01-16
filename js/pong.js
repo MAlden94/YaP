@@ -231,6 +231,9 @@ var Pong = function()
 		var test = function(event) {
 		    if(event.alpha == null || event.beta == null ||  event.gamma == null) {
 			$('#PongTable #_InputMethod option[value="' + index + '"]').remove();
+			if (index == YaP_Object.Settings.InputMethod){
+			  YaP_Object.Settings.InputMethod = 'mousemove';
+			}
 		    }
 		    window.removeEventListener(index, test, false);
 		}
@@ -418,6 +421,12 @@ var Pong = function()
 	    case 'keydown':
 		$('#PongTable .PlayerVelocity').show();
 		break;
+	    default:
+		if (YaP_Object.Privates.InputMethodNames[this.value] == undefined){
+		    //console.warn('InputMethod <select/> has been reset to ' + YaP_Object.Settings.InputMethod);
+		    $(this).val(YaP_Object.Settings.InputMethod);
+		}
+	        break;
 	}
 	YaP_Object.Settings.InputMethod = this.value;
     });
