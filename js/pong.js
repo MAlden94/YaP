@@ -245,6 +245,7 @@ var Pong = function()
 			if (index == YaP_Object.Settings.InputMethod){
 			  YaP_Object.Settings.InputMethod = 'mousemove';
 			}
+			console.warn('Unsupported event detected:', index, ': InputMethod has been reset to mousemove, offending <option/> removed.');
 		    }
 		    window.removeEventListener(index, test, false);
 		}
@@ -434,7 +435,7 @@ var Pong = function()
 	    default:
 		if (YaP_Object.Privates.InputMethodNames[this.value] == undefined){
 		    $(this).val(YaP_Object.Settings.InputMethod);
-		    console.warn('InputMethod <select/> has been reset to ', YaP_Object.Settings.InputMethod);
+		    console.warn('InputMethod not found, <select/> has been reset to ', YaP_Object.Settings.InputMethod);
 		}
 	        break;
 	}
@@ -516,7 +517,8 @@ var Pong = function()
     });
 
     $('#PongTable #Menu').dblclick(function (event) {
-	// Prevent accidental close of our menu open if user double clicks it (ie: clicking a spinbox very fast)
+	// Prevent accidental close of our menu if user double clicks
+        //     it or it's children (ie: clicking a spinbox very fast)
 	event.stopPropagation();
     }).on('doubletap',function (event) {
 	event.stopPropagation();
@@ -926,6 +928,7 @@ var Pong = function()
     * @return true
     **/
     YaP_Object.Functions.EventHandler = function (event) {
+        console.debug('EventHandler: ', event, 'InputMethod: ', YaP_Object.Settings.InputMethod, 'Interactive: ', YaP_Object.Settings.Interactive);
         if (!YaP_Object.Settings.Interactive || event.type != YaP_Object.Settings.InputMethod) return;
             switch (event.type) {
                 case 'keydown':
@@ -950,24 +953,13 @@ var Pong = function()
     YaP_Object.Functions.deviceorientationHandler = function (event) {
         console.debug('deviceorientationHandler: ', event);
         if (event.gamma == null || event.beta == null) {
-            console.warn('Unsupported event detected: InputMethod has been reset to mousemove');
+            console.warn('Unsupported event detected: InputMethod has been reset to mousemove, offending <option/> removed.');
             $('#PongTable #_InputMethod option[value="deviceorientation"]').remove();
             YaP_Object.Settings.InputMethod = 'mousemove';
             YaP_Object.Functions.Update();
             return true;
         }
 
-	/*
-	    if (window.location.hash == "#PONG-DEBUG"){
-		YaP_Object.Privates.gamma = (YaP_Object.Privates.gamma + event.gamma) / 2;
-		YaP_Object.Privates.beta  = (YaP_Object.Privates.beta  + event.beta)  / 2;
-		console.log(event);
-		console.log(YaP_Object.Privates.gamma);
-	    } else {
-		YaP_Object.Privates.gamma = event.gamma;
-		YaP_Object.Privates.beta  = event.beta;
-	    }
-	*/
 
         if ($('#PongTable #Calibrate').text().indexOf('Confirm') != -1) {
             index = (Math.abs(window.orientation) == 90) + 0; // Type conversion true = 1, etc.
