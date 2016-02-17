@@ -50,28 +50,33 @@ In order to allow the user to exit/pause game put these elements in the body som
     (and will scroll the window to the menu buttons, if #pong_scroll_to is not used)
 
 Notes to self:
-    keyboard & touch/drag invert controls not yet implemented, Gyro invert untested.
-    need to allow user to change ball & paddle sizes, and vx/y, and keybinds
+    Keyboard & touch/drag invert controls not yet implemented, Gyro invert untested.
+    Need to allow user to change ball & paddle sizes, and vx/y, and keybinds
       (Level will adjust it now, but  we might want a initial size, or have a option to adjust individual things)
+      (I could fix YaP_Object.Privates.ball_vx & YaP_Object.Privates.ball_vy by prefixing with init so Levels won't mess it up)
 
-    need to fix AI for DualPaddles when Interactive == false, so it is single player AI
-    need to adapt for phones (done) (need to add double tap to exit)
+    Need to fix AI for DualPaddles when Interactive == false, so it is single player AI
+    Need to adapt for phones (done) (need to add double tap to exit)
 
-    (I could fix YaP_Object.Privates.ball_vx & YaP_Object.Privates.ball_vy by prefixing with init so Levels won't mess it up)
-
-    need to add WebSocket support
+    Need to add WebSocket support
       and multiplayer pvp or remote ctrl option
-    need to have a mobile gesture for pong menu and exit from interactive
-    maybe make pong menu stay open if no "#pong_scroll_to" or "#pong_interactive_toggle"
-      is found and pong is interactive and page has reloaded or user has returned
+    Need to have a mobile gesture for pong menu.
+    Maybe make pong menu stay open if no "#pong_scroll_to" or "#pong_interactive_toggle"
+      is found and pong is interactive and page has reloaded, returned to by user
+       (maybe make it possible to disable this feature as well?)
 
-   look for a way to avoid location.reload() when reseting.
-   mouseSensitivity option (maybe use degreeOfMotion??)
+   Look for a way to avoid location.reload() when reseting.
+   Need a mouseSensitivity option (maybe use degreeOfMotion??)
    
-   BUG:gyro does not work immediately, also calibrate doesn't exit on menu close.
+   BUG: Gyro does not work immediately, also calibrate doesn't exit on menu close. (latter is fixed)
 */
 
-/// No user serviceable parts below!
+/**
+ * 
+ * ///             No user serviceable parts below!                 \\\
+ * /// Please use separate js files for user defined functionality. \\\
+ * 
+ **/
 
 if (typeof jQuery === 'undefined')
 {
@@ -92,10 +97,10 @@ if (typeof jQuery === 'undefined')
 	return this.each(function () {
 	    $(this).keypress(function (event) {
 		var newKeyCode = event.which;
-		//console.log(String.fromCharCode((96 <= newKeyCode && newKeyCode <= 105)? newKeyCode-48 : newKeyCode));
+		//console.debug(String.fromCharCode((96 <= newKeyCode && newKeyCode <= 105)? newKeyCode-48 : newKeyCode));
 		if (newKeyCode == lastKeyCode) {
 		    var newKeyTime = Date.now();
-		    //console.log(newKeyTime, ' - ', lastKeyTime, ' = ', newKeyTime - lastKeyTime, ' <= ', deltaTime)
+		    //console.debug(newKeyTime, ' - ', lastKeyTime, ' = ', newKeyTime - lastKeyTime, ' <= ', deltaTime)
 		    if (newKeyTime - lastKeyTime <= deltaTime) {
 			lastKeyCode = null;
 			newKeyTime  = 0;
@@ -178,11 +183,11 @@ var Pong = function()
     YaP_Object.Settings.AI_player                 = 2;           // 0 =  off  --- 1 =  P1 is cpu  /  2 =  P2 is cpu (default =  2)
 
     YaP_Object.Settings.degreeOfMotion            = 2;
-    YaP_Object.Settings.GyroOffset                = [0, 0]; // bugged in certain orientations
+    YaP_Object.Settings.GyroOffset                = [0, 0];
 
     YaP_Object.Settings.InputMethod               = 'deviceorientation'; // leave this as is (for mobile support)
     YaP_Object.Settings.DualPaddles               = false;       // default =  false
-    YaP_Object.Settings.InvertControls            = false;
+    YaP_Object.Settings.InvertControls            = false;       // default =  false
 
     YaP_Object.Settings.AutoLevelUp               = true;        // default =  true
     
@@ -196,6 +201,8 @@ var Pong = function()
     YaP_Object.Settings.link_velocity_of_players  = true;        // default =  true
 
     YaP_Object.Settings.FixBoundaryBug            = false;       // default =  false
+    
+//     YaP_Object.Settings.MenuKeyDoublePress     = not yet implemented (for hotkeys)
 
     YaP_Object.Functions = new Object();
 
@@ -248,11 +255,11 @@ var Pong = function()
 	}
     });
 
-    $("#PongTable").dblclick(function () {
-	// allows user to exit interaction by double clicking.
+    $('#PongTable').dblclick(function () {
+	// Allows user to exit interaction with pong game by double clicking on #PongTable (negative space).
 	if (YaP_Object.Settings.Interactive) $('#pong_interactive_toggle').mouseup();
     }).on('doubletap',function() {
-	$("#PongTable").dblclick();
+	$('#PongTable').dblclick();
     });
 
     $('#pong_btn_group').css('display', 'inline');
@@ -503,13 +510,13 @@ var Pong = function()
 	    'margin-left': -$(this).outerWidth()  / 2 + 'px',
 	    'margin-top':  -$(this).outerHeight() / 2 + 'px'
 	}).click(function (event) {
-	    event.stopPropagation()
+	    event.stopPropagation() // why is this here?
 	    if (this.id == 'About') $(this).fadeOut(1000);
 	}).fadeOut(0);
     });
 
     $('#PongTable #Menu').dblclick(function (event) {
-	// don't close menu if user double clicks it
+	// Prevent accidental close of our menu open if user double clicks it (ie: clicking a spinbox very fast)
 	event.stopPropagation();
     }).on('doubletap',function (event) {
 	event.stopPropagation();
@@ -517,8 +524,8 @@ var Pong = function()
 
 
     $('body').click(function (event) {
-	// keep our menu open if user hit's a websites menu
-	//   (might make separate css selector like "pong-keep-open")
+	// Keep our menu open if user clicks on the webpage's menu
+	//   (might make separate css selector like "pong-keep-open" or "pong-ignore")
 	if ($(event.target).is('a') || $(event.target).is('button')) return;
 	if (YaP_Object.Settings.Menu) {
 	    YaP_Object.Functions.toggleMenu();
@@ -532,10 +539,10 @@ var Pong = function()
 	console.group('Reading LocalStorage[*]:');
 	for (param in YaP_Object.Settings) {
 	    if (localStorage[param] === undefined) {
-		console.debug("\t\tSkipping localStorage[", param, "] == undefined");
+		console.log("\t\tSkipping localStorage[", param, "] == undefined");
 		continue;
 	    }
-	    console.debug("\t\t(YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param],") = (localStorage[", param, "], ", localStorage[param], ')');
+	    console.log("\t\t(YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param],") = (localStorage[", param, "], ", localStorage[param], ')');
 	    try {
 		YaP_Object.Settings[param] = JSON.parse(localStorage[param]);
 	    }
@@ -546,7 +553,7 @@ var Pong = function()
 	console.groupEnd();
     }
 
-    //this is encapulated in a function because $(document).keypress(...GlobalKeyboardHandler); does not work
+    // This is encapulated in a function because $(document).keypress(...GlobalKeyboardHandler); does not work
     $(document).keypress(function (event) {
 	YaP_Object.Functions.GlobalKeyboardHandler(event)
     });
@@ -587,6 +594,8 @@ var Pong = function()
 	else {
 	    clearInterval(YaP_Object.Privates.Blinker);
 	    YaP_Object.Privates.Blinker = null;
+	    // Exit calibration and menu
+	    $('#PongTable #Calibrate').text('Calibrate');
 	    $('#PongTable #Menu, #About').fadeOut(500);
 	}
 
@@ -656,7 +665,7 @@ var Pong = function()
 	if (typeof Storage !== 'undefined') {
 	    console.group('Writing LocalStorage[*]:');
 	    for (param in YaP_Object.Settings) {
-		console.debug("\t\t(localStorage[", param, "], ", localStorage[param],") = (YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param], ')');
+		console.log("\t\t(localStorage[", param, "], ", localStorage[param],") = (YaP_Object.Settings[", param, "], ", YaP_Object.Settings[param], ')');
 		try {
 		    localStorage[param] = JSON.stringify(YaP_Object.Settings[param]);
 		}
@@ -711,7 +720,7 @@ var Pong = function()
 		YaP_Object.Settings.Level--;
 		break;
 	    default:
-		console.info('Updating level only')
+		console.info('Updating level only, not changing number.')
 	}
 
 	YaP_Object.Settings.Level = constrain(YaP_Object.Settings.Level, 1, 100);
@@ -727,6 +736,7 @@ var Pong = function()
 	}
 
 	if (YaP_Object.Settings.Interactive) {
+	    // Put 'Pong Level: ' in a 'YaP_Object.Privates.'?
 	    document.title = 'Pong Level: ' + YaP_Object.Settings.Level; // YaP_Object.Privates.title +
 	}
 	else {
@@ -754,7 +764,7 @@ var Pong = function()
 	    YaP_Object.Privates.$ball.css('right',  (YaP_Object.Privates.window_width  - parseInt(YaP_Object.Privates.$ball.css('left'))) - parseInt(YaP_Object.Privates.$ball.css('width') ) + 'px');
 	}
 
-	// rather than calling these methods multiple times we set a varible to it's value to instead,and we reduce it to one call to optimize for speed
+	// Rather than calling these methods multiple times we set a varible to it's value to instead,and we reduce it to one call to optimize for speed
 	ball_top    = parseInt(YaP_Object.Privates.$ball.css('top'));
 	ball_bottom = parseInt(YaP_Object.Privates.$ball.css('bottom'));
 	ball_left   = parseInt(YaP_Object.Privates.$ball.css('left'));
@@ -875,7 +885,7 @@ var Pong = function()
 	ball_top  += YaP_Object.Privates.ball_vy;
 	ball_left += YaP_Object.Privates.ball_vx;
 
-	// reduced to one call for speed
+	// Reduced to one call for speed
 	YaP_Object.Privates.$ball.css( {
 	    'top':  ball_top  + 'px',
 	    'left': ball_left + 'px',
@@ -884,12 +894,13 @@ var Pong = function()
 	if ((YaP_Object.Privates.LatestFrameLatency = (new Date()).getMilliseconds() - start) > YaP_Object.Privates.SafeFrameLatency) {
 	    if (YaP_Object.Settings.Interactive) {
 		YaP_Object.Settings.Interactive = false;
-		alert("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
+		alert('Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.');
 	    }
 	    else {
-		console.warn("Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.");
+		console.warn('Pong has been paused because it may freeze or slow down browser. Consider upgrading browser or computer if possible.');
 	    }
-	    $('#pong_pause_toggle').mouseup(); // ughhhhh
+	    $('#pong_pause_toggle').mouseup();
+	    // The below method seems unreliable so *.mouseup is being used for now.
 	    //YaP_Object.Settings.Paused = true;
 	    //YaP_Object.Functions.Update();
 	}
@@ -937,6 +948,7 @@ var Pong = function()
     * @return true
     **/
     YaP_Object.Functions.deviceorientationHandler = function (event) {
+        console.debug('deviceorientationHandler: ', event);
         if (event.gamma == null || event.beta == null) {
             console.warn('Unsupported event detected: InputMethod has been reset to mousemove');
             $('#PongTable #_InputMethod option[value="deviceorientation"]').remove();
@@ -958,10 +970,9 @@ var Pong = function()
 	*/
 
         if ($('#PongTable #Calibrate').text().indexOf('Confirm') != -1) {
-            index = (Math.abs(window.orientation) == 90) + 0; // type conversion
+            index = (Math.abs(window.orientation) == 90) + 0; // Type conversion true = 1, etc.
             YaP_Object.Settings.GyroOffset[index] = index ? event.gamma : event.beta;
             $('#PongTable #Calibrate').text('Confirm [' + pad(parseInt(YaP_Object.Settings.GyroOffset[index]), 4) + ']');
-            console.log(index, YaP_Object.Settings.GyroOffset[index]);
             return;
        }
 
@@ -994,7 +1005,10 @@ var Pong = function()
     * @return true
     **/
     YaP_Object.Functions.TouchHandler = function (event) {
-	//event.preventDefault(); // considered harmful: breaks pong menu
+        console.debug('TouchHandler: ', event);
+        if (event.type == 'touchmove'){ // don't interfere with clicks
+	    event.preventDefault();
+	}
 	var $real_player = null;
 	if  (YaP_Object.Settings.DualPaddles) {
 	    $real_player = YaP_Object.Privates.$p1.add(YaP_Object.Privates.$p2);
@@ -1021,6 +1035,7 @@ var Pong = function()
     * @return true
     **/
     YaP_Object.Functions.MouseHandler = function (event) {
+        console.debug('MouseHandler: ', event);
 	if (YaP_Object.Settings.DualPaddles) {
 	    var $real_player = YaP_Object.Privates.$p1.add(YaP_Object.Privates.$p2);
 	}
@@ -1047,6 +1062,7 @@ var Pong = function()
     * @return true
     **/
     YaP_Object.Functions.KeyboardHandler = function (event) {
+        console.debug('KeyboardHandler: ', event);
 
 	p1_top    = parseInt(YaP_Object.Privates.$p1.css('top'));
 	p1_bottom = parseInt(YaP_Object.Privates.$p1.css('bottom'));
@@ -1100,6 +1116,7 @@ var Pong = function()
     }
 
     YaP_Object.Functions.GlobalKeyboardHandler = function (event) {
+        console.debug('GlobalKeyboardHandler: ', event);
 	if (!YaP_Object.Settings.Interactive) return;
 	switch (event.which) {
 	    case 43:
@@ -1116,7 +1133,7 @@ var Pong = function()
     }
 
   /**
-    * @brief This is a bugfix
+    * @brief This is a bugfix for json bool type casting
     * @notes
     * @return void
     **/
