@@ -690,14 +690,14 @@ var Pong = function()
 	    YaP_Object.Settings.Interactive = true;
 
 	    if ($('#pong_scroll_to').length){
-		console.debug('Found #pong_scroll_to @ ', $('#pong_scroll_to').position().bottom);
-		window.scrollTo(0, $('#pong_scroll_to').position().bottom)
+		console.debug('Found #pong_scroll_to @ ', $('#pong_scroll_to').position().top);
+		window.scrollTo(0, $('#pong_scroll_to').position().top)
 	    } else if ($('#pong_btn_group').length){
-		console.debug('Found #pong_btn_group @ ', $('#pong_btn_group').position().bottom);
-		window.scrollTo(0, $('#pong_btn_group').position().bottom)
+		console.debug('Found #pong_btn_group @ ', $('#pong_btn_group').position().top);
+		window.scrollTo(0, $('#pong_btn_group').position().top)
 	    } else {
-		window.scrollTo(0, $('#pong_interactive_toggle').position().bottom)
-		console.debug('Found #pong_interactive_toggle @ ', $('#pong_interactive_toggle').position().bottom);
+		window.scrollTo(0, $('#pong_interactive_toggle').position().top)
+		console.debug('Found #pong_interactive_toggle @ ', $('#pong_interactive_toggle').position().top);
 	    }
 	}
 	
