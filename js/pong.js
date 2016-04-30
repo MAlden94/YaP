@@ -544,7 +544,7 @@ var Pong = function()
     $('body').click(function (event) {
 	// Keep our menu open if user clicks on the webpage's menu
 	// NOTE:  (might make separate css selector like "pong-keep-open" or "pong-ignore" as well)
-        console.debug('Body click: ', event, 'on: ', event.target, 'Interactive: ', YaP_Object.Settings.Interactive);
+        //console.debug('Body click: ', event, 'on: ', event.target, 'Interactive: ', YaP_Object.Settings.Interactive);
 	if ($(event.target).is('a, button, span')) return;
 	if (YaP_Object.Settings.Menu) {
 	    YaP_Object.Functions.toggleMenu();
