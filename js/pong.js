@@ -21,11 +21,11 @@ to the code, so please email me if you wish to.
 
 For any questions please email me.
 
-What's included: pong.js, pong.css, pong.alt*.css (get the files here or email me: http://linuxrules94.users.sf.net/)
+What's included: pong.js, pong.css, pong.common.css, pong.alt*.css (get the files here or email me: http://linuxrules94.users.sf.net/)
 
 
 Make sure you set your DOCTYPE to <!DOCTYPE html>
-Add the following inside <head></head> and replace css/pong.css with the path of one of 3 css files included (pong.css [recommended], or pong.alt*.css):
+Add the following inside <head></head> and replace css/pong.css with the path of one of the css files included (pong.css [recommended], or pong.alt*.css):
 
 <link href="css/pong.css" type="text/css" rel="stylesheet">
 <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -79,6 +79,10 @@ Notes to self:
           if button is triggered (maybe set a forced_pause var) (fixed, for now)
     BUG:  Menu won't show if exit/pause </button>'s are missing. (this is due to using a jQuery trigger)
     BUG:  Firefox CSS (text to button ratios wrong)
+    
+    TODO: Make ball vary in angle during bounce. (because otherwise AI/Player will just hover in same
+          area to get ridiculous scores.)
+    TODO: AI is too lazy/lax, needs to be more agressive at %50 (%50 shouldn't feel like 10% effort)
 */
 
 /**
@@ -539,7 +543,8 @@ var Pong = function()
 
     $('body').click(function (event) {
 	// Keep our menu open if user clicks on the webpage's menu
-	//   (might make separate css selector like "pong-keep-open" or "pong-ignore")
+	//   (might make separate css selector like "pong-keep-open" or "pong-ignore") (not working on mobile)
+        alert(event.target);
 	if ($(event.target).is('a') || $(event.target).is('button')) return;
 	if (YaP_Object.Settings.Menu) {
 	    YaP_Object.Functions.toggleMenu();
