@@ -831,6 +831,11 @@ var Pong = function()
                 AI_ID = YaP_Object.Privates.$p2;
 	    }
 
+	    if (YaP_Object.Settings.DualPaddles) {
+                AI_ID = YaP_Object.Privates.$p1.add(YaP_Object.Privates.$p2);
+	    }
+
+
 	    var ball_pos = ball_top - ((parseInt($(AI_ID).css('height')) / 2) + YaP_Object.Privates.AI_Error) * (YaP_Object.Privates.ball_vy < 0 ? -1 : 1);
 
 	    if (YaP_Object.Privates.ball_vy < 0) {
@@ -856,7 +861,8 @@ var Pong = function()
 	    YaP_Object.Privates.ball_vy *= -1;
 	}
 
-	if (!YaP_Object.Privates.p2_hit && ball_top + Math.abs(YaP_Object.Privates.ball_vy) >= p2_top
+	if (!YaP_Object.Privates.p2_hit
+	   && ball_top    + Math.abs(YaP_Object.Privates.ball_vy) >= p2_top
 	   && ball_bottom + Math.abs(YaP_Object.Privates.ball_vy) >= p2_bottom
 	   && ball_right  - Math.abs(YaP_Object.Privates.ball_vx) <= p2_right + p2_width) {
 
@@ -897,7 +903,11 @@ var Pong = function()
 		}
 	    }
 	}
-	if (!YaP_Object.Privates.p1_hit && ball_top + Math.abs(YaP_Object.Privates.ball_vy) >= p1_top && ball_bottom + Math.abs(YaP_Object.Privates.ball_vy) >= p1_bottom && ball_left - Math.abs(YaP_Object.Privates.ball_vx) <= p1_left + p1_width) {
+	if (!YaP_Object.Privates.p1_hit
+	&& ball_top    + Math.abs(YaP_Object.Privates.ball_vy) >= p1_top
+	&& ball_bottom + Math.abs(YaP_Object.Privates.ball_vy) >= p1_bottom
+	&& ball_left   - Math.abs(YaP_Object.Privates.ball_vx) <= p1_left + p1_width) {
+
 	    YaP_Object.Privates.$p1_score.text(parseInt(YaP_Object.Privates.$p1_score.text()) + 1);
 	    YaP_Object.Privates.ball_vx *= -1;
 	    if (YaP_Object.Settings.AI_player == 1 || !YaP_Object.Settings.Interactive) {
