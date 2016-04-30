@@ -56,7 +56,7 @@ Notes to self:
          (Level will adjust it for now, but we might want a initial size, or have a option to adjust individual things)
          (I could fix YaP_Object.Privates.ball_vx & YaP_Object.Privates.ball_vy by prefixing with init so Levels won't mess it up)
 
-    TODO: Need to fix AI for DualPaddles when Interactive == false, so it is single player AI
+    TODO: Need to fix AI for DualPaddles when Interactive == false, so it is single player AI (fixed)
     TODO: Need to adapt for phones (done) (need to add double tap to exit)
 
     TODO: Need to add WebSocket support
@@ -835,7 +835,6 @@ var Pong = function()
                 AI_ID = YaP_Object.Privates.$p1.add(YaP_Object.Privates.$p2);
 	    }
 
-
 	    var ball_pos = ball_top - ((parseInt($(AI_ID).css('height')) / 2) + YaP_Object.Privates.AI_Error) * (YaP_Object.Privates.ball_vy < 0 ? -1 : 1);
 
 	    if (YaP_Object.Privates.ball_vy < 0) {
@@ -1196,6 +1195,7 @@ var Pong = function()
     function map(value, inMin, inMax, outMin, outMax) {
 	return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
+
   /**
     * @brief left pads strings
     * @notes min is the min length required
