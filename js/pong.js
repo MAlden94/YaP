@@ -278,7 +278,7 @@ var Pong = function()
 	$('#PongTable').dblclick();
     });
 
-    $('#pong_btn_group').css('display', 'inline');
+    $('#pong_btn_group').css('display', 'block');
 
     $('#pong_pause_toggle').css('display', 'inline').mouseup(function () {
         // if Paused is false then Paused and ForcedPause are set true
