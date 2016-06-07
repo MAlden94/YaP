@@ -254,17 +254,25 @@ var Pong = function()
 	    * if so add it to YaP_Object.Privates.InputMethods
 	    **/
 	    if(index == 'deviceorientation') {
-		var test = function(event) {
-		    if(event.alpha == null || event.beta == null ||  event.gamma == null) {
+	        if (window.DeviceOrientationEvent){
+		    var test = function(event) {
+			  if(event.alpha == null || event.beta == null ||  event.gamma == null) {
+				$('#PongTable #_InputMethod option[value="' + index + '"]').remove();
+				if (index == YaP_Object.Settings.InputMethod){
+				  YaP_Object.Settings.InputMethod = 'mousemove';
+				}
+				//console.warn('Unsupported event detected:', index, ': InputMethod has been reset to mousemove, offending <option/> removed.');
+			  }
+			  window.removeEventListener(index, test, false);
+			}
+			window.addEventListener(index, test, false);
+		} else {
 			$('#PongTable #_InputMethod option[value="' + index + '"]').remove();
 			if (index == YaP_Object.Settings.InputMethod){
 			  YaP_Object.Settings.InputMethod = 'mousemove';
 			}
 			//console.warn('Unsupported event detected:', index, ': InputMethod has been reset to mousemove, offending <option/> removed.');
-		    }
-		    window.removeEventListener(index, test, false);
 		}
-		window.addEventListener(index, test, false);
 	    }
 	    YaP_Object.Privates.InputMethods.push(index);
 
