@@ -72,7 +72,7 @@ Notes to self:
    
     TODO: Document all bugs/features since intial branch push.
           (this will take forever since I neglected doing this
-          from the start, and unfortunatly we may miss somethings)
+          from the start, and unfortunatly we may miss some things)
    
     BUG:  Gyro does not work immediately, also calibrate doesn't exit on menu close. (latter is fixed)
     BUG:  Ball gets in way of content if pong is paused and page is reloaded, also pause is not sticking
@@ -82,7 +82,7 @@ Notes to self:
     
     TODO: Make ball vary in angle during bounce. (because otherwise AI/Player will just hover in same
           area to get ridiculous scores.)
-    TODO: AI is too lazy/lax, needs to be more agressive at %50 (%50 shouldn't feel like 10% effort)
+    TODO: AI is too lazy/lax, needs to be more agressive at 50% (50% shouldn't feel like 10% effort)
 */
 
 /**
@@ -408,7 +408,7 @@ var Pong = function()
 	</table>\
 	<table>\
 	<td><a id="ResetScores"   href="#">Reset scores</a></td>\
-	<td></td>\
+	<td>&nbsp;</td>\
 	<td><a id="ResetSettings" href="#">Default settings</a></td>\
 	</tr>\
 	</table>\
