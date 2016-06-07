@@ -33,6 +33,7 @@ minify-js: $(JS_FILES) $(JS_MINIFIED)
 %.min.css: %.css
 	@echo '==> Minifying $<'
 	$(YUI_COMPRESSOR) $(YUI_COMPRESSOR_FLAGS) --type css $< >$@
+	sed  -i 's/\.css/.min.css/g' $@
 	@echo
 
 %.min.js: %.js
