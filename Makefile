@@ -30,12 +30,12 @@ minify-css: $(CSS_FILES) $(CSS_MINIFIED)
 # target: minify-js - Minifies JS.
 minify-js: $(JS_FILES) $(JS_MINIFIED)
 
-%-min.css: %.css
+%.min.css: %.css
 	@echo '==> Minifying $<'
 	$(YUI_COMPRESSOR) $(YUI_COMPRESSOR_FLAGS) --type css $< >$@
 	@echo
 
-%-min.js: %.js
+%.min.js: %.js
 	@echo '==> Minifying $<'
 	$(YUI_COMPRESSOR) $(YUI_COMPRESSOR_FLAGS) --type js $< >$@
 	@echo
