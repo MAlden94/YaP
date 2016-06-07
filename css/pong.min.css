@@ -1,1 +1,1 @@
-@import 'pong.common.css';#PongTable{z-index:-9999}#PongTable.interactive{z-index:9999;background:rgba(0,0,0,0.6)!important;background:#000}
+@import 'pong.common.min.css';#PongTable{z-index:-9999}#PongTable.interactive{z-index:9999;background:rgba(0,0,0,0.6)!important;background:#000}
