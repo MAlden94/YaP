@@ -1,1 +1,1 @@
-@import 'pong.common.min.css';#PongTable{z-index:-9999}#PongTable.interactive{z-index:9999}
+/usr/local/bin/uglifycss --verbose ./css/pong.alt1.min.css
