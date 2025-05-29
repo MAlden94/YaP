@@ -430,7 +430,7 @@ var Pong = function()
 	</div><div id="About">Copyright (C) 2012-2016 Mitchell Lafferty &lt;<a href="http://linuxrules94.users.sf.net/">http://linuxrules94.users.sf.net/</a>&gt; <coolspeedy6 at gmail dot com><br>\
 	Released under the GNU GPL.<br>\
 	Please read the source code for more info. (pong.js)<br>\
-	<a id="MyBitcoin" href="bitcoin:16tpxvjpPKhMUGhZkRU9s9UhuKZMuFBVfz?label=Donations%20Address%20for%20linuxrules94"><em>Bitcoin donations :)</em></a></div>');
+	<a id="MyBitcoin" href="#"><em>Bitcoin donations :)</em></a></div>');
 
     $.each(YaP_Object.Privates.InputMethods, function (index, value) {
 	// $.inArray doesn't work here because typeof InputMethodNames === 'object'
